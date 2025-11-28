@@ -11,8 +11,7 @@ namespace PlatformGame
         protected Texture2D tex;
         protected Vector2 pos;
         protected Rectangle hitBoxLive;
-
-        public abstract void Update();
+        protected Color color;
         public abstract void Draw(SpriteBatch spriteBatch);
 
         public bool CollisionDetected(CollidableObject other)

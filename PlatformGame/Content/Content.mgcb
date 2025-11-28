@@ -13,6 +13,12 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin animationFX.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:animationFX.fx
+
 #begin grass.png
 /importer:TextureImporter
 /processor:TextureProcessor
