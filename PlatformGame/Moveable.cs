@@ -17,24 +17,26 @@ namespace PlatformGame
         protected float scale;
         protected Vector2 origin;
 
-        protected Vector2 objectDirection;
-        protected float speed;
-        protected Vector2 objectDestination;
+        // protected Vector2 objectDirection;
+        protected Vector2 velocity;
+        // protected Vector2 objectDestination;
 
-        protected bool objectMoving;
-        protected bool IsOnGround;
+        public bool objectMoving;
+        protected bool isOnGround;
 
         public Moveable(int totalFrame, Vector2 frameSize)
         {
             this.totalFrame = totalFrame;
-            srcRec = new Rectangle(0,0,20,40);
             this.frameSize = frameSize;
+            srcRec = new Rectangle(0,0, (int) frameSize.X,(int) frameSize.Y);
             origin = new Vector2((int)frameSize.X / 2, (int)frameSize.Y / 2);
+            isOnGround = true;
         }
 
-        public virtual void Update()
+        public virtual void Update(GameTime gameTime)
         {
-
+            hitBoxLive.X = (int)pos.X;
+            hitBoxLive.Y = (int)pos.Y;
         }
 
         public void Animation(GameTime gameTime)
@@ -49,6 +51,7 @@ namespace PlatformGame
 
         public void TurnLeft(GameTime gameTime)
         {
+            objectMoving = true;
             animationFX = SpriteEffects.None;
             rotation = 0;
             frameTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
@@ -58,17 +61,19 @@ namespace PlatformGame
 
         public void TurnRight(GameTime gameTime)
         {
+            objectMoving = true;
             animationFX = SpriteEffects.FlipHorizontally;
             rotation = 0;
             frameTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
             rotation = MathHelper.ToRadians(0);
-           // ChangeDirection(new Vector2(-1, 0));
+            // ChangeDirection(new Vector2(-1, 0));
         }
 
         public void Jump(GameTime gameTime)
         {
-            pos.Y -= 2.5f;
-            IsOnGround = false;
+            objectMoving = true;
+            velocity.Y = -200f;
+            isOnGround = false;
             frameTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
         }
 
@@ -76,8 +81,7 @@ namespace PlatformGame
         {
             if (tex != null)
             {
-                Vector2 posOnTile = pos + origin;
-                spriteBatch.Draw(tex, posOnTile, srcRec, Color.White, rotation, origin, scale, animationFX, 1);
+                spriteBatch.Draw(tex, pos, srcRec, Color.White, rotation, origin, scale, animationFX, 1);
             }
         }
     }

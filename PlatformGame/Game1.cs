@@ -9,6 +9,8 @@ namespace PlatformGame
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
+        Player player;
+        Vector2 frameSize = new Vector2(40,40);
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -26,8 +28,8 @@ namespace PlatformGame
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            // TODO: use this.Content to load your game content here
+            TextureManager.Textures(Content);
+            player = new Player(TextureManager.allLinkTex, new Vector2(200,400), 8, frameSize);
         }
 
         protected override void Update(GameTime gameTime)
@@ -35,7 +37,13 @@ namespace PlatformGame
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            PlayerKeyReader.Update();
+            player.Update(gameTime);
+
+            if (player.objectMoving)
+            {
+                player.Animation(gameTime);
+            }
 
             base.Update(gameTime);
         }
@@ -44,7 +52,9 @@ namespace PlatformGame
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            _spriteBatch.Begin();
+            player.Draw(_spriteBatch);
+            _spriteBatch.End();
 
             base.Draw(gameTime);
         }
