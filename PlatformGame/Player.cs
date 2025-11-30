@@ -43,12 +43,18 @@ namespace PlatformGame
             if (PlayerKeyReader.KeyPressedAndHold(Keys.A) || PlayerKeyReader.KeyPressedAndHold(Keys.Left))
             {
                 TurnLeft(gameTime);
+                pos.X += velocity.X * dt;
             }
             else if (PlayerKeyReader.KeyPressedAndHold(Keys.D) || PlayerKeyReader.KeyPressedAndHold(Keys.Right))
             {
                 TurnRight(gameTime);
+                pos.X += velocity.X * dt;
             }
-            if (PlayerKeyReader.KeyPressedAndHold(Keys.Space))
+            else
+            {
+                velocity.X = 0;
+            }
+            if (PlayerKeyReader.KeyPressedAndHold(Keys.Space) && isOnGround)
             {
                 Jump(gameTime);
             }

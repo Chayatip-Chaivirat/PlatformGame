@@ -56,6 +56,7 @@ namespace PlatformGame
             rotation = 0;
             frameTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
             rotation = MathHelper.ToRadians(0);
+            velocity.X = -150f;
             //ChangeDirection(new Vector2(-1, 0));
         }
 
@@ -66,6 +67,7 @@ namespace PlatformGame
             rotation = 0;
             frameTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
             rotation = MathHelper.ToRadians(0);
+            velocity.X = 150f;
             // ChangeDirection(new Vector2(-1, 0));
         }
 
