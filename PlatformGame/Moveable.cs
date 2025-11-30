@@ -16,13 +16,16 @@ namespace PlatformGame
         protected float rotation = 0;
         protected float scale;
         protected Vector2 origin;
-
-        // protected Vector2 objectDirection;
         protected Vector2 velocity;
-        // protected Vector2 objectDestination;
+
+        protected int maxHP;
+        protected Rectangle attackHitBox;
 
         public bool objectMoving;
         protected bool isOnGround;
+
+        protected bool faceRight = false;
+        protected bool faceLeft = false;
 
         public Moveable(int totalFrame, Vector2 frameSize)
         {
@@ -57,7 +60,9 @@ namespace PlatformGame
             frameTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
             rotation = MathHelper.ToRadians(0);
             velocity.X = -150f;
-            //ChangeDirection(new Vector2(-1, 0));
+            faceLeft = true;
+            faceRight = false;
+            //attackHitBox = new Rectangle((int) pos.X - tex.Width, (int) pos.Y, tex.Width, tex.Height);
         }
 
         public void TurnRight(GameTime gameTime)
@@ -68,7 +73,9 @@ namespace PlatformGame
             frameTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
             rotation = MathHelper.ToRadians(0);
             velocity.X = 150f;
-            // ChangeDirection(new Vector2(-1, 0));
+            faceRight = true;
+            faceLeft = false;
+            //attackHitBox = new Rectangle((int)pos.X + hitBoxLive.Width, (int) pos.Y, tex.Width, tex.Height);
         }
 
         public void Jump(GameTime gameTime)
@@ -77,6 +84,18 @@ namespace PlatformGame
             velocity.Y = -200f;
             isOnGround = false;
             frameTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
+        }
+
+        public virtual void NormalAttack(GameTime gameTime, Moveable other)
+        {
+            if (faceRight)
+            {
+                attackHitBox = new Rectangle((int)pos.X + hitBoxLive.Width, (int)pos.Y, tex.Width, tex.Height);
+            }
+            else if (faceLeft)
+            {
+                attackHitBox = new Rectangle((int)pos.X - tex.Width, (int)pos.Y, tex.Width, tex.Height);
+            }
         }
 
         public override void Draw(SpriteBatch spriteBatch)

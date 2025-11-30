@@ -8,9 +8,12 @@ namespace PlatformGame
 {
     internal class Player : Moveable
     {
-        public int lives = 3;
         private float collisionInterval = 1.0f;
-        private float currentCD = .5f;
+        private float currentCD = 0.5f;
+
+        private float attackCD = 0.4f;
+        private float attackCurrentCD = 0.0f;
+        public int baseAttack = 2;
 
         public Player(Texture2D tex, Vector2 pos, int TotalFrame, Vector2 frameSize) :base(TotalFrame, frameSize)
         {
@@ -21,6 +24,8 @@ namespace PlatformGame
             scale = 1;
             velocity = new Vector2(200,100);
             color = Color.White;
+            maxHP = 10;
+            attackHitBox = Rectangle.Empty;
         }
 
         public override void Update(GameTime gameTime)
@@ -49,6 +54,12 @@ namespace PlatformGame
             {
                 TurnRight(gameTime);
                 pos.X += velocity.X * dt;
+            }
+            else if (PlayerKeyReader.KeyPressedAndHold(Keys.F) || PlayerKeyReader.LeftClick())
+            {
+                // Attack logic
+                //first call base, then enemy.maxHP -= baseAttack;
+                // Don't forget attack CD
             }
             else
             {
