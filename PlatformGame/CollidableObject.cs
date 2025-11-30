@@ -11,12 +11,13 @@ namespace PlatformGame
         protected Texture2D tex;
         protected Vector2 pos;
         protected Rectangle hitBoxLive;
+        protected Rectangle attackHitBox;
         protected Color color;
         public abstract void Draw(SpriteBatch spriteBatch);
 
         public bool CollisionDetected(CollidableObject other)
         {
-            return this.hitBoxLive.Intersects(other.hitBoxLive);
+            return this.attackHitBox.Intersects(other.hitBoxLive);
         }
 
         public virtual void CollisionHandler(List<CollidableObject> listName)

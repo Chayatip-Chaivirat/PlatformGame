@@ -18,8 +18,8 @@ namespace PlatformGame
         protected Vector2 origin;
         protected Vector2 velocity;
 
-        protected int maxHP;
-        protected Rectangle attackHitBox;
+        public int maxHP;
+        public int baseAttack;
 
         public bool objectMoving;
         protected bool isOnGround;

@@ -13,9 +13,8 @@ namespace PlatformGame
 
         private float attackCD = 0.4f;
         private float attackCurrentCD = 0.0f;
-        public int baseAttack = 2;
 
-        public Player(Texture2D tex, Vector2 pos, int TotalFrame, Vector2 frameSize) :base(TotalFrame, frameSize)
+        public Player(Texture2D tex, Vector2 pos, int totalFrame, Vector2 frameSize) :base(totalFrame, frameSize)
         {
             this.tex = tex;
             this.pos = pos;
@@ -26,6 +25,7 @@ namespace PlatformGame
             color = Color.White;
             maxHP = 10;
             attackHitBox = Rectangle.Empty;
+            baseAttack = 3;
         }
 
         public override void Update(GameTime gameTime)
