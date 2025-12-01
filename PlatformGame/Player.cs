@@ -37,7 +37,7 @@ namespace PlatformGame
 
             if (!isOnGround)
             {
-                velocity.Y += 200f * dt;
+                velocity.Y += 500f * dt;
                 pos.Y += velocity.Y * dt;
             }
             if (pos.Y >= 400)
@@ -56,17 +56,19 @@ namespace PlatformGame
             {
                 TurnRight(gameTime);
                 pos.X += velocity.X * dt;
+                srcRec = new Rectangle(0, 0, (int)frameSize.X, (int)frameSize.Y);
             }
             else if (PlayerKeyReader.KeyPressedAndHold(Keys.F) || PlayerKeyReader.LeftClick())
             {
                 // Attack logic
                 // Don't forget attack CD
                 NormalAttack(gameTime, enemy);
-                srcRec = new Rectangle(0,120, (int)frameSize.X, (int)frameSize.Y);
+                //srcRec = new Rectangle(0,120, (int)frameSize.X, (int)frameSize.Y);
             }
             else
             {
                 velocity.X = 0;
+                //srcRec = new Rectangle(0, 0, (int)frameSize.X, (int)frameSize.Y);
             }
             if (PlayerKeyReader.KeyPressedAndHold(Keys.Space) && isOnGround)
             {

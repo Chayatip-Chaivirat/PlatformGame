@@ -44,6 +44,10 @@ namespace PlatformGame
 
             if (player.objectMoving)
             {
+                if(player.attacking)
+                {
+                    player.srcRec = new Rectangle(0, 120, (int)frameSize.X, (int)frameSize.Y);
+                }
                 player.Animation(gameTime);
             }
 

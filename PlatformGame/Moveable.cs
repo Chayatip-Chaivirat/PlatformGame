@@ -11,7 +11,7 @@ namespace PlatformGame
         protected int totalFrame;
         protected Vector2 frameSize;
         protected double frameTimer = 100, frameInterval = 100;
-        protected Rectangle srcRec;
+        public Rectangle srcRec;
 
         protected SpriteEffects animationFX = SpriteEffects.None;
         protected float rotation = 0;
@@ -27,6 +27,7 @@ namespace PlatformGame
 
         protected bool faceRight = false;
         protected bool faceLeft = false;
+        public bool attacking = false;
 
         public Moveable(int totalFrame, Vector2 frameSize)
         {
@@ -89,6 +90,7 @@ namespace PlatformGame
 
         public virtual void NormalAttack(GameTime gameTime, Moveable other)
         {
+            attacking = true;
             if (faceRight)
             {
                 attackHitBox = new Rectangle((int)pos.X + hitBoxLive.Width, (int)pos.Y, tex.Width, tex.Height);
