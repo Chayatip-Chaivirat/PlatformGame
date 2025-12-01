@@ -18,11 +18,21 @@ namespace PlatformGame
 
         public bool Attacked(CollidableObject other)
         {
+            if(other == null)
+            {
+                return false;
+            }
+
             return this.attackHitBox.Intersects(other.hitBoxLive);
         }
 
         public bool Detected(CollidableObject other)
         {
+            if (other == null)
+            {
+                return false;
+            }
+
             return this.detectionRange.Intersects(other.hitBoxLive);
         }
 

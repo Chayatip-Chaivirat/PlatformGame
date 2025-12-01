@@ -14,6 +14,8 @@ namespace PlatformGame
         private float attackCD = 0.4f;
         private float attackCurrentCD = 0.0f;
 
+        Enemy enemy;
+
         public Player(Texture2D tex, Vector2 pos, int totalFrame, Vector2 frameSize) :base(totalFrame, frameSize)
         {
             this.tex = tex;
@@ -58,8 +60,9 @@ namespace PlatformGame
             else if (PlayerKeyReader.KeyPressedAndHold(Keys.F) || PlayerKeyReader.LeftClick())
             {
                 // Attack logic
-                //first call base, then enemy.maxHP -= baseAttack;
                 // Don't forget attack CD
+                NormalAttack(gameTime, enemy);
+                srcRec = new Rectangle(0,120, (int)frameSize.X, (int)frameSize.Y);
             }
             else
             {

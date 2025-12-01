@@ -11,6 +11,8 @@ namespace PlatformGame
 
         Player player;
         Vector2 frameSize = new Vector2(40,40);
+
+        Enemy enemy;
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);

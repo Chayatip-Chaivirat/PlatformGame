@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Reflection.Metadata.Ecma335;
 
 namespace PlatformGame
 {
@@ -91,15 +92,18 @@ namespace PlatformGame
             if (faceRight)
             {
                 attackHitBox = new Rectangle((int)pos.X + hitBoxLive.Width, (int)pos.Y, tex.Width, tex.Height);
+                if (Attacked(other))
+                {
+                    other.maxHP -= baseAttack;
+                }
             }
             else if (faceLeft)
             {
                 attackHitBox = new Rectangle((int)pos.X - tex.Width, (int)pos.Y, tex.Width, tex.Height);
-            }
-
-            if (Attacked(other))
-            {
-                maxHP -= baseAttack;
+                if (Attacked(other))
+                {
+                    other.maxHP -= baseAttack;
+                }
             }
         }
 
