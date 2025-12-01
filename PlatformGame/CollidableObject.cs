@@ -12,12 +12,18 @@ namespace PlatformGame
         protected Vector2 pos;
         protected Rectangle hitBoxLive;
         protected Rectangle attackHitBox;
+        protected Rectangle detectionRange;
         protected Color color;
         public abstract void Draw(SpriteBatch spriteBatch);
 
-        public bool CollisionDetected(CollidableObject other)
+        public bool Attacked(CollidableObject other)
         {
             return this.attackHitBox.Intersects(other.hitBoxLive);
+        }
+
+        public bool Detected(CollidableObject other)
+        {
+            return this.detectionRange.Intersects(other.hitBoxLive);
         }
 
         public virtual void CollisionHandler(List<CollidableObject> listName)

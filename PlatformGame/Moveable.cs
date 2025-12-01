@@ -96,6 +96,11 @@ namespace PlatformGame
             {
                 attackHitBox = new Rectangle((int)pos.X - tex.Width, (int)pos.Y, tex.Width, tex.Height);
             }
+
+            if (Attacked(other))
+            {
+                maxHP -= baseAttack;
+            }
         }
 
         public override void Draw(SpriteBatch spriteBatch)

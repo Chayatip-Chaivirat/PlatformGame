@@ -9,7 +9,6 @@ namespace PlatformGame
 {
     internal class Enemy : Moveable
     {
-        private Rectangle detectionRange;
         private int detectionRangeWidth;
         Random random = new Random();
         int movementCode;
@@ -33,9 +32,9 @@ namespace PlatformGame
 
         public override void Update(GameTime gameTime)
         {
-            if (CollisionDetected(player))
+            if(Detected(player))
             {
-                player.maxHP -= baseAttack;
+                NormalAttack(gameTime, player);
             }
             base.Update(gameTime);
         }
