@@ -9,10 +9,9 @@ namespace PlatformGame
     internal class Player : Moveable
     {
         private float collisionInterval = 1.0f;
-        private float currentCD = 0.5f;
+        private float currentCD = 0.0f;
 
-        private float attackCD = 0.4f;
-        private float attackCurrentCD = 0.0f;
+        private float normalAttackCD = 1f;
 
         Enemy enemy;
 
@@ -40,11 +39,28 @@ namespace PlatformGame
                 velocity.Y += 500f * dt;
                 pos.Y += velocity.Y * dt;
             }
-            if (pos.Y >= 400)
+            if (pos.Y >= 400) // temp solution for not having a platform
             {
                 pos.Y = 400;
                 isOnGround = true;
                 velocity.Y = 0;
+            }
+            if (!attacking)
+            {
+                srcRec = new Rectangle(0, 0, (int)frameSize.X, (int)frameSize.Y);
+            }
+            if (attacking)
+            {
+                srcRec = new Rectangle(0, 120, (int)frameSize.X, (int)frameSize.Y);
+            }
+
+            if (currentCD > 0)
+            {
+                currentCD -= dt;
+            }
+            if (currentCD > 0)
+            {
+                attacking = false;
             }
 
             if (PlayerKeyReader.KeyPressedAndHold(Keys.A) || PlayerKeyReader.KeyPressedAndHold(Keys.Left))
@@ -56,14 +72,13 @@ namespace PlatformGame
             {
                 TurnRight(gameTime);
                 pos.X += velocity.X * dt;
-                srcRec = new Rectangle(0, 0, (int)frameSize.X, (int)frameSize.Y);
             }
-            else if (PlayerKeyReader.KeyPressedAndHold(Keys.F) || PlayerKeyReader.LeftClick())
+            else if (PlayerKeyReader.KeyPressedAndHold(Keys.F) || PlayerKeyReader.LeftClick() && currentCD <= 0)
             {
                 // Attack logic
                 // Don't forget attack CD
                 NormalAttack(gameTime, enemy);
-                //srcRec = new Rectangle(0,120, (int)frameSize.X, (int)frameSize.Y);
+                currentCD = normalAttackCD;
             }
             else
             {

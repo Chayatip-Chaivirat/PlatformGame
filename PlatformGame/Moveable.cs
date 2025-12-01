@@ -11,7 +11,7 @@ namespace PlatformGame
         protected int totalFrame;
         protected Vector2 frameSize;
         protected double frameTimer = 100, frameInterval = 100;
-        public Rectangle srcRec;
+        protected Rectangle srcRec;
 
         protected SpriteEffects animationFX = SpriteEffects.None;
         protected float rotation = 0;
@@ -27,7 +27,7 @@ namespace PlatformGame
 
         protected bool faceRight = false;
         protected bool faceLeft = false;
-        public bool attacking = false;
+        protected bool attacking = false;
 
         public Moveable(int totalFrame, Vector2 frameSize)
         {
@@ -64,7 +64,6 @@ namespace PlatformGame
             velocity.X = -150f;
             faceLeft = true;
             faceRight = false;
-            //attackHitBox = new Rectangle((int) pos.X - tex.Width, (int) pos.Y, tex.Width, tex.Height);
         }
 
         public void TurnRight(GameTime gameTime)
@@ -77,7 +76,6 @@ namespace PlatformGame
             velocity.X = 150f;
             faceRight = true;
             faceLeft = false;
-            //attackHitBox = new Rectangle((int)pos.X + hitBoxLive.Width, (int) pos.Y, tex.Width, tex.Height);
         }
 
         public void Jump(GameTime gameTime)
