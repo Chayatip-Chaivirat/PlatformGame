@@ -31,7 +31,9 @@ namespace PlatformGame
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             TextureManager.Textures(Content);
-            player = new Player(TextureManager.allLinkTex, new Vector2(200,400), 8, frameSize);
+            player = new Player(TextureManager.allLinkTex, new Vector2(200,400), 8, frameSize, 0,0);
+
+            enemy = new Enemy(TextureManager.allLinkTex, new Vector2(250, 400), 1, frameSize,0,161);
         }
 
         protected override void Update(GameTime gameTime)
@@ -47,6 +49,8 @@ namespace PlatformGame
                 player.Animation(gameTime);
             }
 
+            enemy.Update(gameTime);
+
             base.Update(gameTime);
         }
 
@@ -56,6 +60,7 @@ namespace PlatformGame
 
             _spriteBatch.Begin();
             player.Draw(_spriteBatch);
+            enemy.Draw(_spriteBatch);
             _spriteBatch.End();
 
             base.Draw(gameTime);

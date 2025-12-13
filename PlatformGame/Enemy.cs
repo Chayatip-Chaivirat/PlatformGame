@@ -10,10 +10,11 @@ namespace PlatformGame
     internal class Enemy : Moveable
     {
         private int detectionRangeWidth;
+        private int detectionRangeHeight;
         Random random = new Random();
         int movementCode;
         Player player;
-        public Enemy(Texture2D tex, Vector2 pos, int totalFrame, Vector2 frameSize) : base (totalFrame, frameSize)
+        public Enemy(Texture2D tex, Vector2 pos, int totalFrame, Vector2 frameSize, int recX, int recY) : base (totalFrame, frameSize, recX, recY)
         {
             this.tex = tex;
             this.pos = pos;
@@ -24,10 +25,14 @@ namespace PlatformGame
             color = Color.White;
             maxHP = 10;
             attackHitBox = Rectangle.Empty;
-            detectionRangeWidth = tex.Width * 3;
-            detectionRange = new Rectangle((int)pos.X + tex.Width /2 - detectionRangeWidth / 2, (int)pos.Y, detectionRangeWidth, tex.Height);
+            detectionRangeWidth = tex.Width * 2;
+            detectionRangeHeight = tex.Height;
+            detectionRangeRight = new Rectangle((int)pos.X + tex.Width, (int)pos.Y, detectionRangeWidth, tex.Height);
+            detectionRangeLeft = new Rectangle((int)pos.X - detectionRangeWidth, (int)pos.Y, detectionRangeWidth, tex.Height);
             movementCode = random.Next(1,3); // From 1 to 2
             baseAttack = 3;
+            currentCD = 0.0f;
+            normalAttackCD = 3f;
         }
 
         public void ChangeMovementCode()
@@ -43,9 +48,49 @@ namespace PlatformGame
         }
         public override void Update(GameTime gameTime)
         {
-            if(Detected(player))
+            float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            currentCD += dt;
+
+            // Update detection ranges
+            detectionRangeLeft.X = (int)pos.X - detectionRangeWidth;
+            detectionRangeLeft.Y = (int)pos.Y;
+
+            detectionRangeRight.X = (int)pos.X + tex.Width;
+            detectionRangeRight.Y = (int)pos.Y;
+
+            //Movement and Attack Logic
+            if (DetectedLeft(player))
             {
-                NormalAttack(gameTime, player);
+                TurnLeft(gameTime);
+                pos.X += velocity.X * dt;
+                if (currentCD >= normalAttackCD)
+                {
+                    NormalAttack(gameTime, player);
+                    currentCD = 0.0f;
+                }
+            }
+            else if (DetectedRight(player))
+            {
+                TurnRight(gameTime);
+                pos.X += velocity.X * dt;
+                if (currentCD >= normalAttackCD)
+                {
+                    NormalAttack(gameTime, player);
+                    currentCD = 0.0f;
+                }
+            }
+            else
+            {
+                if (movementCode == 1)
+                {
+                    TurnRight(gameTime);
+                    pos.X += velocity.X * dt;
+                }
+                else if (movementCode == 2)
+                {
+                    TurnLeft(gameTime);
+                    pos.X += velocity.X * dt;
+                }
             }
             base.Update(gameTime);
         }

@@ -18,6 +18,8 @@ namespace PlatformGame
         protected float scale;
         protected Vector2 origin;
         protected Vector2 velocity;
+        protected int recX;
+        protected int recY;
 
         public int maxHP;
         public int baseAttack;
@@ -29,11 +31,21 @@ namespace PlatformGame
         protected bool faceLeft = false;
         protected bool attacking = false;
 
-        public Moveable(int totalFrame, Vector2 frameSize)
+        protected float currentCD;
+        protected float normalAttackCD;
+        protected Rectangle detectionRangeLeft;
+        protected Rectangle detectionRangeRight;
+        protected int detectionRangeWidth;
+        protected int detectionRangeHeight;
+        protected Rectangle attackHitBox;
+
+        public Moveable(int totalFrame, Vector2 frameSize, int recX, int recY)
         {
             this.totalFrame = totalFrame;
             this.frameSize = frameSize;
-            srcRec = new Rectangle(0,0, (int) frameSize.X,(int) frameSize.Y);
+            this.recX = recX;
+            this.recY = recY;
+            srcRec = new Rectangle(recX,recY, (int) frameSize.X,(int) frameSize.Y);
             origin = new Vector2((int)frameSize.X / 2, (int)frameSize.Y / 2);
             isOnGround = true;
         }
@@ -52,6 +64,34 @@ namespace PlatformGame
                 frameTimer = frameInterval; frame++;
                 srcRec.X = (frame % totalFrame) * (int)frameSize.X;
             }
+        }
+
+        public bool DetectedLeft(Moveable other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+            return this.detectionRangeLeft.Intersects(other.hitBoxLive);
+        }
+
+        public bool DetectedRight(Moveable other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+            return this.detectionRangeRight.Intersects(other.hitBoxLive);
+        }
+
+        public bool Attacked(Moveable other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+
+            return this.attackHitBox.Intersects(other.hitBoxLive);
         }
 
         public void TurnLeft(GameTime gameTime)

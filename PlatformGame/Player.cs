@@ -9,13 +9,10 @@ namespace PlatformGame
     internal class Player : Moveable
     {
         private float collisionInterval = 1.0f;
-        private float currentCD = 0.0f;
-
-        private float normalAttackCD = 1f;
 
         Enemy enemy;
 
-        public Player(Texture2D tex, Vector2 pos, int totalFrame, Vector2 frameSize) :base(totalFrame, frameSize)
+        public Player(Texture2D tex, Vector2 pos, int totalFrame, Vector2 frameSize, int recX, int recY) :base(totalFrame, frameSize, recX, recY)
         {
             this.tex = tex;
             this.pos = pos;
@@ -27,6 +24,8 @@ namespace PlatformGame
             maxHP = 10;
             attackHitBox = Rectangle.Empty;
             baseAttack = 3;
+            currentCD = 0.0f;
+            normalAttackCD = 1f;
         }
 
         public override void Update(GameTime gameTime)
