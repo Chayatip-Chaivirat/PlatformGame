@@ -9,8 +9,6 @@ namespace PlatformGame
 {
     internal class Enemy : Moveable
     {
-        private int detectionRangeWidth;
-        private int detectionRangeHeight;
         Random random = new Random();
         int movementCode;
         Player player;
