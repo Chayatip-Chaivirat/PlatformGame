@@ -8,6 +8,10 @@ namespace PlatformGame
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+        public Rectangle screenWidth;
+
+        Camera camera;
+        Viewport viewport;
 
         Player player;
         Vector2 frameSize = new Vector2(40,40);
@@ -25,12 +29,16 @@ namespace PlatformGame
             // TODO: Add your initialization logic here
 
             base.Initialize();
+            screenWidth = new Rectangle(0,0,GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
+            viewport = GraphicsDevice.Viewport;
         }
 
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             TextureManager.Textures(Content);
+            camera = new Camera(viewport);
+
             player = new Player(TextureManager.allLinkTex, new Vector2(200,400), 8, frameSize, 0,0);
 
             enemy = new Enemy(TextureManager.allLinkTex, new Vector2(250, 400), 1, frameSize,0,161);
@@ -42,6 +50,7 @@ namespace PlatformGame
                 Exit();
 
             PlayerKeyReader.Update();
+            camera.SetPosition(player.pos - new Vector2(player.hitBoxLive.Width, player.hitBoxLive.Height));
             player.Update(gameTime);
 
             if (player.objectMoving)
@@ -58,7 +67,7 @@ namespace PlatformGame
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            _spriteBatch.Begin();
+            _spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, camera.Transform);
             player.Draw(_spriteBatch);
             enemy.Draw(_spriteBatch);
             _spriteBatch.End();

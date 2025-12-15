@@ -12,6 +12,10 @@ namespace PlatformGame
         Random random = new Random();
         int movementCode;
         Player player;
+
+        //For testing
+        float patrollRangeLeft;
+        float patrollRangeRight;
         public Enemy(Texture2D tex, Vector2 pos, int totalFrame, Vector2 frameSize, int recX, int recY) : base (totalFrame, frameSize, recX, recY)
         {
             this.tex = tex;
@@ -31,6 +35,10 @@ namespace PlatformGame
             baseAttack = 3;
             currentCD = 0.0f;
             normalAttackCD = 3f;
+
+            //For testing
+            patrollRangeLeft = 200;
+            patrollRangeRight = 300;
         }
 
         public void ChangeMovementCode()
@@ -56,7 +64,18 @@ namespace PlatformGame
             detectionRangeRight.X = (int)pos.X + tex.Width;
             detectionRangeRight.Y = (int)pos.Y;
 
+            //for testing
+            if (pos.X <= patrollRangeLeft)
+            {
+                movementCode = 1; // Move right
+            }
+            else if (pos.X >= patrollRangeRight)
+            {
+                movementCode = 2; // Move left
+            }
+
             //Movement and Attack Logic
+
             if (DetectedLeft(player))
             {
                 TurnLeft(gameTime);

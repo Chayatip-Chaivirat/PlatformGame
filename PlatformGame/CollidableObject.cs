@@ -9,8 +9,8 @@ namespace PlatformGame
     abstract class CollidableObject
     {
         protected Texture2D tex;
-        protected Vector2 pos;
-        protected Rectangle hitBoxLive;
+        public Vector2 pos;
+        public Rectangle hitBoxLive;
         protected Color color;
         public abstract void Draw(SpriteBatch spriteBatch);
 
