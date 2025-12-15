@@ -25,7 +25,7 @@ namespace PlatformGame
         List<Enemy> enemyList = new List<Enemy>();
 
         Platform platform;
-        List<Platform> platforms = new List<Platform>();
+        List<Platform> platformList = new List<Platform>();
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -41,6 +41,15 @@ namespace PlatformGame
             screenWidth = _graphics.PreferredBackBufferWidth;
             viewport = GraphicsDevice.Viewport;
         }
+        public void ReadFromFile(string fileName)
+        {
+            List<Rectangle> platformRectList = JsonFileHandler.AllInOneRecList(fileName, "platforms");
+            foreach (Rectangle rec in platformRectList)
+            {
+                Platform platform = new Platform(rec);
+                platformList.Add(platform);
+            }
+        }
 
         protected override void LoadContent()
         {
@@ -51,6 +60,9 @@ namespace PlatformGame
             player = new Player(TextureManager.allLinkTex, new Vector2(200,400), 8, frameSize, 0,0);
 
             enemy = new Enemy(TextureManager.allLinkTex, new Vector2(250, 400), 1, frameSize,0,161,player);
+            
+            ReadFromFile("level_1-1.json");
+
         }
 
         protected override void Update(GameTime gameTime)
@@ -79,6 +91,10 @@ namespace PlatformGame
             _spriteBatch.Begin(/*SpriteSortMode.Deferred, null, null, null, null, null, camera.Transform*/);
             player.Draw(_spriteBatch);
             enemy.Draw(_spriteBatch);
+            foreach (Platform platform in platformList)
+            {
+                platform.Draw(_spriteBatch);
+            }
             _spriteBatch.End();
 
             base.Draw(gameTime);
