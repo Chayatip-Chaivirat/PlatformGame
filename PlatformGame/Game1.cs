@@ -61,7 +61,7 @@ namespace PlatformGame
 
             enemy = new Enemy(TextureManager.allLinkTex, new Vector2(250, 400), 1, frameSize,0,161,player);
             
-            ReadFromFile("level_1-1.json");
+            ReadFromFile("Level_1.json");
 
         }
 

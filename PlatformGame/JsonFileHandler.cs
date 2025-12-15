@@ -1,12 +1,14 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IO;
-using System;
-using SharpDX.Direct3D11;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace PlatformGame
 {
@@ -33,32 +35,60 @@ namespace PlatformGame
             Rectangle rec = new Rectangle(x, y, width, height);
             return rec;
         }
-        public static List<Rectangle> AllInOneRecList (string fileName, string propertyName)
+
+        public static List<Rectangle> AllInOneRecList(string fileName, string propertyName)
         {
             if (wholeObject == null || jsonFileName == null || jsonFileName != fileName)
             {
                 jsonFileName = fileName;
-                StreamReader file =  File.OpenText(fileName);
-                JsonTextReader reader = new JsonTextReader(file);
+                using StreamReader file = File.OpenText(fileName);
+                using JsonTextReader reader = new JsonTextReader(file);
                 wholeObject = JObject.Load(reader);
             }
 
             List<Rectangle> recList = new List<Rectangle>();
-            JArray arrayObject = (JArray)wholeObject.GetValue(propertyName);
-            for(int i=0;i<arrayObject.Count;i++)
+
+            JArray arrayObject = (JArray)wholeObject[propertyName];
+
+            foreach (JObject obj in arrayObject)
             {
-                JObject obj = (JObject)wholeObject.GetValue(propertyName);
+                int x = (int)obj["positionX"];
+                int y = (int)obj["positionY"]; //
+                int width = (int)obj["width"];
+                int height = (int)obj["height"];
 
-                int x = Convert.ToInt32(obj.GetValue("positionX"));
-                int y = Convert.ToInt32(obj.GetValue("postitionY"));
-                int width = Convert.ToInt32(obj.GetValue("width"));
-                int height = Convert.ToInt32(obj.GetValue("height"));
-                Rectangle rec = new Rectangle(x, y, width, height);
-                recList.Add(rec);
+                recList.Add(new Rectangle(x, y, width, height));
             }
-            return recList;
 
+            return recList;
         }
+
+        //public static List<Rectangle> AllInOneRecList (string fileName, string propertyName)
+        //{
+        //    if (wholeObject == null || jsonFileName == null || jsonFileName != fileName)
+        //    {
+        //        jsonFileName = fileName;
+        //        StreamReader file =  File.OpenText(fileName);
+        //        JsonTextReader reader = new JsonTextReader(file);
+        //        wholeObject = JObject.Load(reader);
+        //    }
+
+        //    List<Rectangle> recList = new List<Rectangle>();
+        //    JArray arrayObject = (JArray)wholeObject.GetValue(propertyName);
+        //    for(int i=0;i<arrayObject.Count;i++)
+        //    {
+        //        JObject obj = (JObject)wholeObject.GetValue(propertyName);
+
+        //        int x = Convert.ToInt32(obj.GetValue("positionX"));
+        //        int y = Convert.ToInt32(obj.GetValue("positionY"));
+        //        int width = Convert.ToInt32(obj.GetValue("width"));
+        //        int height = Convert.ToInt32(obj.GetValue("height"));
+        //        Rectangle rec = new Rectangle(x, y, width, height);
+        //        recList.Add(rec);
+        //    }
+        //    return recList;
+
+        //}
 
         //public void ReadFromFile(string fileName)
         //{

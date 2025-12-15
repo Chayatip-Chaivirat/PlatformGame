@@ -121,7 +121,7 @@ namespace PlatformGame
         public void Jump(GameTime gameTime)
         {
             objectMoving = true;
-            velocity.Y = -200f;
+            velocity.Y = -400f;
             isOnGround = false;
             frameTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
         }
