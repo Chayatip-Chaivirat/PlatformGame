@@ -37,8 +37,8 @@ namespace PlatformGame
             normalAttackCD = 3f;
 
             //For testing
-            patrollRangeLeft = 200;
-            patrollRangeRight = 300;
+            patrollRangeLeft = 300;
+            patrollRangeRight = 500;
         }
 
         public void ChangeMovementCode()

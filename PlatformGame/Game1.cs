@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace PlatformGame
 {
@@ -17,6 +18,10 @@ namespace PlatformGame
         Vector2 frameSize = new Vector2(40,40);
 
         Enemy enemy;
+        List<Enemy> enemyList = new List<Enemy>();
+
+        Platform platform;
+        List<Platform> platforms = new List<Platform>();
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -50,7 +55,7 @@ namespace PlatformGame
                 Exit();
 
             PlayerKeyReader.Update();
-            camera.SetPosition(player.pos - new Vector2(player.hitBoxLive.Width, player.hitBoxLive.Height));
+            //camera.SetPosition(player.pos - new Vector2(player.hitBoxLive.Width, player.hitBoxLive.Height));
             player.Update(gameTime);
 
             if (player.objectMoving)
@@ -67,7 +72,7 @@ namespace PlatformGame
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            _spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, camera.Transform);
+            _spriteBatch.Begin(/*SpriteSortMode.Deferred, null, null, null, null, null, camera.Transform*/);
             player.Draw(_spriteBatch);
             enemy.Draw(_spriteBatch);
             _spriteBatch.End();
