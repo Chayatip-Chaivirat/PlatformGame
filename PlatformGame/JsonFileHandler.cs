@@ -53,7 +53,7 @@ namespace PlatformGame
             foreach (JObject obj in arrayObject)
             {
                 int x = (int)obj["positionX"];
-                int y = (int)obj["positionY"]; //
+                int y = (int)obj["positionY"]; 
                 int width = (int)obj["width"];
                 int height = (int)obj["height"];
 

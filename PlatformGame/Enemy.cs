@@ -41,6 +41,7 @@ namespace PlatformGame
             patrollRangeRight = 500;
 
             this.player = player;
+            isOnGround = true;
         }
 
         public void ChangeMovementCode()

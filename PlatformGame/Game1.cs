@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
@@ -57,12 +58,11 @@ namespace PlatformGame
             TextureManager.Textures(Content);
             camera = new Camera(viewport);
 
+            ReadFromFile("Level_1.json");
+
             player = new Player(TextureManager.allLinkTex, new Vector2(200,400), 8, frameSize, 0,0);
 
             enemy = new Enemy(TextureManager.allLinkTex, new Vector2(250, 400), 1, frameSize,0,161,player);
-            
-            ReadFromFile("Level_1.json");
-
         }
 
         protected override void Update(GameTime gameTime)
@@ -77,6 +77,11 @@ namespace PlatformGame
             if (player.objectMoving)
             {
                 player.Animation(gameTime);
+            }
+
+            foreach (Platform p in platformList)
+            {
+                player.CollidingWithPlatform(p);
             }
 
             enemy.Update(gameTime);

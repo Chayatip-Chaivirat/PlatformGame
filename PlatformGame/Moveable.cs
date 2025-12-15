@@ -17,7 +17,6 @@ namespace PlatformGame
         protected float rotation = 0;
         protected float scale;
         protected Vector2 origin;
-        protected Vector2 velocity;
         protected int recX;
         protected int recY;
 
@@ -25,7 +24,6 @@ namespace PlatformGame
         public int baseAttack;
 
         public bool objectMoving;
-        protected bool isOnGround;
 
         protected bool faceRight = false;
         protected bool faceLeft = false;

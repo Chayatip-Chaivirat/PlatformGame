@@ -11,7 +11,7 @@ namespace PlatformGame
         private float collisionInterval = 1.0f;
 
         Enemy enemy;
-
+        Platform platform;
         public Player(Texture2D tex, Vector2 pos, int totalFrame, Vector2 frameSize, int recX, int recY) :base(totalFrame, frameSize, recX, recY)
         {
             this.tex = tex;
@@ -26,6 +26,51 @@ namespace PlatformGame
             baseAttack = 3;
             currentCD = 0.0f;
             normalAttackCD = 1f;
+        }
+
+        public void CollidingWithPlatform(Platform platform)
+        {
+            isOnGround = false;
+            if (platform == null) return;
+            if (!hitBoxLive.Intersects(platform.hitBoxLive))
+                return;
+
+            Rectangle intersection = Rectangle.Intersect(this.hitBoxLive, platform.hitBoxLive);
+
+            // Vertical
+            if (intersection.Height < intersection.Width)
+            {
+                if (velocity.Y > 0) // From top
+                {
+                    pos.Y -= intersection.Height;
+                    isOnGround = true;
+                    velocity.Y = 0;
+                }
+
+                else if (velocity.Y < 0) // From bottom
+                {
+                    pos.Y += intersection.Height;
+                    velocity.Y = 0;
+                }
+            }
+
+            // Horizontal
+            else
+            {
+                if (velocity.X > 0) // From left
+                {
+                    pos.X -= intersection.Width;
+                }
+                else if (velocity.X < 0) // From right
+                {
+                    pos.X += intersection.Width;
+                }
+
+                velocity.X = 0;
+            }
+
+            hitBoxLive.X = (int)pos.X;
+            hitBoxLive.Y = (int)pos.Y;
         }
 
         public override void Update(GameTime gameTime)
