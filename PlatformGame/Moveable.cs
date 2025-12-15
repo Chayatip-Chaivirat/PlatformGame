@@ -151,7 +151,7 @@ namespace PlatformGame
         {
             if (tex != null)
             {
-                spriteBatch.Draw(tex, pos, srcRec, Color.White, rotation, origin, scale, animationFX, 1);
+                spriteBatch.Draw(tex, pos, srcRec, color, rotation, origin, scale, animationFX, 1);
             }
         }
     }

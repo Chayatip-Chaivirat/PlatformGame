@@ -16,7 +16,7 @@ namespace PlatformGame
         //For testing
         float patrollRangeLeft;
         float patrollRangeRight;
-        public Enemy(Texture2D tex, Vector2 pos, int totalFrame, Vector2 frameSize, int recX, int recY) : base (totalFrame, frameSize, recX, recY)
+        public Enemy(Texture2D tex, Vector2 pos, int totalFrame, Vector2 frameSize, int recX, int recY, Player player) : base (totalFrame, frameSize, recX, recY)
         {
             this.tex = tex;
             this.pos = pos;
@@ -39,6 +39,8 @@ namespace PlatformGame
             //For testing
             patrollRangeLeft = 300;
             patrollRangeRight = 500;
+
+            this.player = player;
         }
 
         public void ChangeMovementCode()
@@ -64,17 +66,9 @@ namespace PlatformGame
             detectionRangeRight.X = (int)pos.X + tex.Width;
             detectionRangeRight.Y = (int)pos.Y;
 
-            //for testing
-            if (pos.X <= patrollRangeLeft)
-            {
-                movementCode = 1; // Move right
-            }
-            else if (pos.X >= patrollRangeRight)
-            {
-                movementCode = 2; // Move left
-            }
-
             //Movement and Attack Logic
+
+            if (!attacking) { color = Color.White; }
 
             if (DetectedLeft(player))
             {
@@ -84,6 +78,7 @@ namespace PlatformGame
                 {
                     NormalAttack(gameTime, player);
                     currentCD = 0.0f;
+                    color = Color.Red; // For testing
                 }
             }
             else if (DetectedRight(player))
@@ -94,20 +89,33 @@ namespace PlatformGame
                 {
                     NormalAttack(gameTime, player);
                     currentCD = 0.0f;
+                    color = Color.Red; // For testing
                 }
             }
             else
             {
-                if (movementCode == 1)
-                {
-                    TurnRight(gameTime);
-                    pos.X += velocity.X * dt;
-                }
-                else if (movementCode == 2)
-                {
-                    TurnLeft(gameTime);
-                    pos.X += velocity.X * dt;
-                }
+
+                //for testing
+                //if (pos.X <= patrollRangeLeft)
+                //{
+                //    movementCode = 1; // Move right
+                //}
+                //else if (pos.X >= patrollRangeRight)
+                //{
+                //    movementCode = 2; // Move left
+                //}
+
+                //if (movementCode == 1)
+                //{
+                //    TurnRight(gameTime);
+                //    pos.X += velocity.X * dt;
+                //}
+                //else if (movementCode == 2)
+                //{
+                //    TurnLeft(gameTime);
+                //    pos.X += velocity.X * dt;
+                //}
+                velocity.X = 0;
             }
             base.Update(gameTime);
         }

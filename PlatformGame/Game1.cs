@@ -2,6 +2,9 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.IO;
 
 namespace PlatformGame
 {
@@ -9,7 +12,8 @@ namespace PlatformGame
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        public Rectangle screenWidth;
+
+        public static int screenWidth;
 
         Camera camera;
         Viewport viewport;
@@ -34,7 +38,7 @@ namespace PlatformGame
             // TODO: Add your initialization logic here
 
             base.Initialize();
-            screenWidth = new Rectangle(0,0,GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
+            screenWidth = _graphics.PreferredBackBufferWidth;
             viewport = GraphicsDevice.Viewport;
         }
 
@@ -46,7 +50,7 @@ namespace PlatformGame
 
             player = new Player(TextureManager.allLinkTex, new Vector2(200,400), 8, frameSize, 0,0);
 
-            enemy = new Enemy(TextureManager.allLinkTex, new Vector2(250, 400), 1, frameSize,0,161);
+            enemy = new Enemy(TextureManager.allLinkTex, new Vector2(250, 400), 1, frameSize,0,161,player);
         }
 
         protected override void Update(GameTime gameTime)
