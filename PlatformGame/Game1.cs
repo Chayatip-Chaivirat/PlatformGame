@@ -74,6 +74,7 @@ namespace PlatformGame
             //camera.SetPosition(player.pos - new Vector2(player.hitBoxLive.Width, player.hitBoxLive.Height));
             player.Update(gameTime);
 
+            player.isOnGround = false;
             if (player.objectMoving)
             {
                 player.Animation(gameTime);

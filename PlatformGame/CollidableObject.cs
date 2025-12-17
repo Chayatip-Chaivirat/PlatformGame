@@ -12,7 +12,6 @@ namespace PlatformGame
         public Vector2 pos;
         public Rectangle hitBoxLive;
         protected Color color;
-        protected bool isOnGround;
         protected Vector2 velocity;
         public abstract void Draw(SpriteBatch spriteBatch);
 

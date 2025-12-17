@@ -28,6 +28,7 @@ namespace PlatformGame
         protected bool faceRight = false;
         protected bool faceLeft = false;
         protected bool attacking = false;
+        public bool isOnGround;
 
         protected float currentCD;
         protected float normalAttackCD;

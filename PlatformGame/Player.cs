@@ -81,7 +81,6 @@ namespace PlatformGame
 
         public override void Update(GameTime gameTime)
         {
-            isOnGround = false;
             objectMoving = false;
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -102,7 +101,7 @@ namespace PlatformGame
             }
             if (attacking)
             {
-                srcRec = new Rectangle(0, 120, (int)frameSize.X, (int)frameSize.Y);
+                srcRec = new Rectangle((int) frameSize.X, 120, (int)frameSize.X, (int)frameSize.Y);
             }
 
             if (currentCD > 0)
