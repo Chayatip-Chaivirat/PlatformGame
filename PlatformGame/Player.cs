@@ -30,7 +30,6 @@ namespace PlatformGame
 
         public void CollidingWithPlatform(Platform platform)
         {
-            isOnGround = false;
             if (platform == null) return;
             if (!hitBoxLive.Intersects(platform.hitBoxLive))
                 return;
@@ -57,20 +56,25 @@ namespace PlatformGame
             // Horizontal
             else
             {
-                if (velocity.X > 0) // From left
+                float bottomOfPlayer = this.hitBoxLive.Bottom;
+                float platformTop = platform.hitBoxLive.Top;
+
+                if (bottomOfPlayer > platformTop)
                 {
-                    pos.X -= intersection.Width;
-                }
-                else if (velocity.X < 0) // From right
-                {
-                    pos.X += intersection.Width;
+                    if (velocity.X > 0)
+                    {
+                        pos.X -= intersection.Width;
+                    }
+                    else if (velocity.X < 0)
+                    {
+                        pos.X += intersection.Width;
+                    }
+                    velocity.X = 0;
                 }
 
-                velocity.X = 0;
+                hitBoxLive.X = (int)pos.X;
+                hitBoxLive.Y = (int)pos.Y;
             }
-
-            hitBoxLive.X = (int)pos.X;
-            hitBoxLive.Y = (int)pos.Y;
         }
 
         public override void Update(GameTime gameTime)
