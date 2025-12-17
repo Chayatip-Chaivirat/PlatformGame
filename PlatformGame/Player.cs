@@ -30,6 +30,9 @@ namespace PlatformGame
 
         public void CollidingWithPlatform(Platform platform)
         {
+            hitBoxLive.X = (int)pos.X;
+            hitBoxLive.Y = (int)pos.Y;
+
             if (platform == null) return;
             if (!hitBoxLive.Intersects(platform.hitBoxLive))
                 return;
@@ -56,10 +59,7 @@ namespace PlatformGame
             // Horizontal
             else
             {
-                float bottomOfPlayer = this.hitBoxLive.Bottom;
-                float platformTop = platform.hitBoxLive.Top;
-
-                if (bottomOfPlayer > platformTop)
+                if (hitBoxLive.Top >= platform.hitBoxLive.Top + 10)
                 {
                     if (velocity.X > 0)
                     {
@@ -71,14 +71,17 @@ namespace PlatformGame
                     }
                     velocity.X = 0;
                 }
-
-                hitBoxLive.X = (int)pos.X;
-                hitBoxLive.Y = (int)pos.Y;
             }
+
+            // Update hitbox so it matches new position
+            hitBoxLive.Location = pos.ToPoint();
+            // Location refers to the top-left corner of the rectangle
+            // ToPoint() converts Vector2 to Point (int)
         }
 
         public override void Update(GameTime gameTime)
         {
+            isOnGround = false;
             objectMoving = false;
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
