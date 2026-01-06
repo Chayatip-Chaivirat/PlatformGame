@@ -42,25 +42,25 @@
       "positionX": 100,
       "positionY": 75,
       "height": 50,
-      "width": 50
+      "width": 48
     },
     {
       "positionX": 200,
       "positionY": 175,
       "height": 50,
-      "width": 50
+      "width": 48
     },
     {
       "positionX": 500,
       "positionY": 75,
       "height": 50,
-      "width": 50
+      "width": 48
     },
     {
       "positionX": 500,
       "positionY": 275,
       "height": 50,
-      "width": 50
+      "width": 48
     }
   ]
 }
