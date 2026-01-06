@@ -12,10 +12,8 @@ namespace PlatformGame
         Random random = new Random();
         int movementCode;
         Player player;
+        Platform currentPlatform;
 
-        //For testing
-        float patrollRangeLeft;
-        float patrollRangeRight;
         public Enemy(Texture2D tex, Vector2 pos, int totalFrame, Vector2 frameSize, int recX, int recY, Player player) : base(totalFrame, frameSize, recX, recY)
         {
             this.tex = tex;
@@ -36,12 +34,14 @@ namespace PlatformGame
             currentCD = 0.0f;
             normalAttackCD = 3f;
 
-            //For testing
-            patrollRangeLeft = 300;
-            patrollRangeRight = 500;
-
             this.player = player;
             isOnGround = true;
+        }
+
+        // Set the current platform the enemy is on
+        public void SetPlatform(Platform platform)
+        {
+            currentPlatform = platform;
         }
 
         public void ChangeMovementCode()
@@ -55,6 +55,72 @@ namespace PlatformGame
 
             movementCode = newMovementCode;
         }
+        //public override void Update(GameTime gameTime)
+        //{
+        //    float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
+        //    currentCD += dt;
+
+        //    // Update detection ranges
+        //    detectionRangeLeft.X = (int)pos.X - detectionRangeWidth;
+        //    detectionRangeLeft.Y = (int)pos.Y;
+
+        //    detectionRangeRight.X = (int)pos.X + tex.Width;
+        //    detectionRangeRight.Y = (int)pos.Y;
+
+        //    //Movement and Attack Logic
+
+        //    if (!attacking) { color = Color.White; }
+
+        //    if (DetectedLeft(player))
+        //    {
+        //        TurnLeft(gameTime);
+        //        pos.X += velocity.X * dt;
+        //        if (currentCD >= normalAttackCD)
+        //        {
+        //            NormalAttack(gameTime, player);
+        //            currentCD = 0.0f;
+        //            color = Color.Red; // For testing
+        //        }
+        //    }
+        //    else if (DetectedRight(player))
+        //    {
+        //        TurnRight(gameTime);
+        //        pos.X += velocity.X * dt;
+        //        if (currentCD >= normalAttackCD)
+        //        {
+        //            NormalAttack(gameTime, player);
+        //            currentCD = 0.0f;
+        //            color = Color.Red; // For testing
+        //        }
+        //    }
+        //    else
+        //    {
+
+        //        //for testing
+        //        //if (pos.X <= patrollRangeLeft)
+        //        //{
+        //        //    movementCode = 1; // Move right
+        //        //}
+        //        //else if (pos.X >= patrollRangeRight)
+        //        //{
+        //        //    movementCode = 2; // Move left
+        //        //}
+
+        //        //if (movementCode == 1)
+        //        //{
+        //        //    TurnRight(gameTime);
+        //        //    pos.X += velocity.X * dt;
+        //        //}
+        //        //else if (movementCode == 2)
+        //        //{
+        //        //    TurnLeft(gameTime);
+        //        //    pos.X += velocity.X * dt;
+        //        //}
+        //        velocity.X = 0;
+        //    }
+        //    base.Update(gameTime);
+        //}
+
         public override void Update(GameTime gameTime)
         {
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -63,62 +129,60 @@ namespace PlatformGame
             // Update detection ranges
             detectionRangeLeft.X = (int)pos.X - detectionRangeWidth;
             detectionRangeLeft.Y = (int)pos.Y;
-
             detectionRangeRight.X = (int)pos.X + tex.Width;
             detectionRangeRight.Y = (int)pos.Y;
 
-            //Movement and Attack Logic
-
-            if (!attacking) { color = Color.White; }
+            // Movement logic
+            if (!attacking) color = Color.White;
 
             if (DetectedLeft(player))
             {
                 TurnLeft(gameTime);
-                pos.X += velocity.X * dt;
-                if (currentCD >= normalAttackCD)
-                {
-                    NormalAttack(gameTime, player);
-                    currentCD = 0.0f;
-                    color = Color.Red; // For testing
-                }
+                MoveWithPlatformCheck(dt);
+                AttackIfReady(gameTime, player);
             }
             else if (DetectedRight(player))
             {
                 TurnRight(gameTime);
-                pos.X += velocity.X * dt;
-                if (currentCD >= normalAttackCD)
-                {
-                    NormalAttack(gameTime, player);
-                    currentCD = 0.0f;
-                    color = Color.Red; // For testing
-                }
+                MoveWithPlatformCheck(dt);
+                AttackIfReady(gameTime, player);
             }
             else
             {
-
-                //for testing
-                //if (pos.X <= patrollRangeLeft)
-                //{
-                //    movementCode = 1; // Move right
-                //}
-                //else if (pos.X >= patrollRangeRight)
-                //{
-                //    movementCode = 2; // Move left
-                //}
-
-                //if (movementCode == 1)
-                //{
-                //    TurnRight(gameTime);
-                //    pos.X += velocity.X * dt;
-                //}
-                //else if (movementCode == 2)
-                //{
-                //    TurnLeft(gameTime);
-                //    pos.X += velocity.X * dt;
-                //}
-                velocity.X = 0;
+                velocity.X = 0; // idle
             }
+
             base.Update(gameTime);
         }
+
+        // Move but stop at platform edges
+        private void MoveWithPlatformCheck(float dt)
+        {
+            if (currentPlatform == null) return;
+
+            float nextPosX = pos.X + velocity.X * dt;
+
+            // Platform boundaries
+            float leftEdge = currentPlatform.hitBoxLive.Left;
+            float rightEdge = currentPlatform.hitBoxLive.Right - hitBoxLive.Width;
+
+            // Clamp movement to platform
+            if (nextPosX < leftEdge) nextPosX = leftEdge;
+            if (nextPosX > rightEdge) nextPosX = rightEdge;
+
+            pos.X = nextPosX;
+        }
+
+        // Handle attack cooldown
+        private void AttackIfReady(GameTime gameTime, Moveable target)
+        {
+            if (currentCD >= normalAttackCD)
+            {
+                NormalAttack(gameTime, target);
+                currentCD = 0.0f;
+                color = Color.Red; // for testing
+            }
+        }
+
     }
 }

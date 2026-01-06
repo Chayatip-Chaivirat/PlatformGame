@@ -46,11 +46,22 @@ namespace PlatformGame
 
             foreach (Rectangle rec in enemyRecList)
             {
-                Enemy enemy = new Enemy(TextureManager.allLinkTex, new Vector2(rec.X, rec.Y), 1,new Vector2(rec.Width, rec.Height), 0, 161,player);
+                Enemy enemy = new Enemy(TextureManager.allLinkTex, new Vector2(rec.X, rec.Y), 1, new Vector2(rec.Width, rec.Height), 0, 161, player);
+
+                // Find the platform the enemy is on
+                foreach (Platform p in platformList)
+                {
+                    if (rec.Bottom == p.hitBoxLive.Top) // if enemy is on top of platform
+                    {
+                        enemy.SetPlatform(p);
+                        break;
+                    }
+                }
 
                 enemyList.Add(enemy);
-                handler.objects.Add(enemy); 
+                handler.objects.Add(enemy);
             }
+
         }
 
 
@@ -85,6 +96,7 @@ namespace PlatformGame
             handler.Update(gameTime);
 
             player.isOnGround = false;
+            player.Animation(gameTime);
 
             foreach (Platform p in platformList)
             {
