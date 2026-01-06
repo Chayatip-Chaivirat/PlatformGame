@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace PlatformGame
 {
@@ -13,6 +14,13 @@ namespace PlatformGame
         int movementCode;
         Player player;
         Platform currentPlatform;
+
+        public List<Platform> platformList;
+
+        private Platform myPlatform;
+        private float leftBound;
+        private float rightBound;
+
 
         public Enemy(Texture2D tex, Vector2 pos, int totalFrame, Vector2 frameSize, int recX, int recY, Player player) : base(totalFrame, frameSize, recX, recY)
         {
@@ -36,7 +44,28 @@ namespace PlatformGame
 
             this.player = player;
             isOnGround = true;
+
+            //FaceRight();
+
         }
+        public void AssignPlatform(List<Platform> platforms)
+        {
+            foreach (Platform p in platforms)
+            {
+                bool xOverlap = hitBoxLive.Right > p.hitBoxLive.Left && hitBoxLive.Left < p.hitBoxLive.Right;
+
+                bool abovePlatform = pos.Y + hitBoxLive.Height <= p.hitBoxLive.Top + 20;
+
+                if (xOverlap && abovePlatform)
+                {
+                    myPlatform = p;
+                    leftBound = p.hitBoxLive.Left;
+                    rightBound = p.hitBoxLive.Right - hitBoxLive.Width;
+                    return;
+                }
+            }
+        }
+
 
         // Set the current platform the enemy is on
         public void SetPlatform(Platform platform)
@@ -57,6 +86,9 @@ namespace PlatformGame
         }
         //public override void Update(GameTime gameTime)
         //{
+        //    // Update hitbox so it matches new position
+        //    hitBoxLive.Location = pos.ToPoint();
+
         //    float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
         //    currentCD += dt;
 
@@ -66,6 +98,22 @@ namespace PlatformGame
 
         //    detectionRangeRight.X = (int)pos.X + tex.Width;
         //    detectionRangeRight.Y = (int)pos.Y;
+
+        //    // Move
+        //    pos.X += velocity.X * dt;
+
+        //    // Clamp to platform
+        //    if (pos.X <= leftBound)
+        //    {
+        //        pos.X = leftBound;
+        //        TurnRight(gameTime);
+        //    }
+        //    else if (pos.X >= rightBound)
+        //    {
+        //        pos.X = rightBound;
+        //        TurnLeft(gameTime);
+        //    }
+
 
         //    //Movement and Attack Logic
 
@@ -118,13 +166,15 @@ namespace PlatformGame
         //        //}
         //        velocity.X = 0;
         //    }
+
         //    base.Update(gameTime);
         //}
 
         public override void Update(GameTime gameTime)
         {
+            hitBoxLive.Location = pos.ToPoint();
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            currentCD += dt;
+            pos.X += velocity.X * dt;
 
             // Update detection ranges
             detectionRangeLeft.X = (int)pos.X - detectionRangeWidth;
@@ -140,8 +190,23 @@ namespace PlatformGame
                 TurnLeft(gameTime);
                 MoveWithPlatformCheck(dt);
                 AttackIfReady(gameTime, player);
+            if (pos.X <= leftBound)
+            {
+                pos.X = leftBound;
+                TurnRight(gameTime);
             }
-            else if (DetectedRight(player))
+            else if (pos.X >= rightBound)
+            {
+                pos.X = rightBound;
+                TurnLeft(gameTime);
+            }
+
+            // Player detection and chasing
+            if (DetectedLeft(player) && pos.X > leftBound)
+            {
+                TurnLeft(gameTime);
+            }
+            else if (DetectedRight(player) && pos.X < rightBound)
             {
                 TurnRight(gameTime);
                 MoveWithPlatformCheck(dt);
@@ -151,6 +216,8 @@ namespace PlatformGame
             {
                 velocity.X = 0; // idle
             }
+            }
+
 
             base.Update(gameTime);
         }

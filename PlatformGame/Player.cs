@@ -12,6 +12,7 @@ namespace PlatformGame
 
         Enemy enemy;
         Platform platform;
+        public List<Enemy> enemies;
         public Player(Texture2D tex, Vector2 pos, int totalFrame, Vector2 frameSize, int recX, int recY) : base(totalFrame, frameSize, recX, recY)
         {
             this.tex = tex;
@@ -117,10 +118,17 @@ namespace PlatformGame
             }
             else if (PlayerKeyReader.KeyPressedAndHold(Keys.F) || PlayerKeyReader.LeftClick() && currentCD <= 0)
             {
-                // Attack logic
-                // Don't forget attack CD
-                NormalAttack(gameTime, enemy);
-                currentCD = normalAttackCD;
+                foreach (Enemy enemy in enemies)
+                {
+                    if (enemies != null)
+                    {
+                        foreach (Enemy e in enemies)
+                        {
+                            NormalAttack(gameTime, e);
+                        }
+                    }
+                    currentCD = normalAttackCD;
+                }
             }
             else
             {
