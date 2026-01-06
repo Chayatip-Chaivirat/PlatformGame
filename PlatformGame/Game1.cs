@@ -11,6 +11,7 @@ namespace PlatformGame
         private SpriteBatch _spriteBatch;
 
         List<Platform> platformList = new List<Platform>();
+        List<Enemy> enemyList = new List<Enemy>();
 
         GameObjectHandler handler;
         Player player;
@@ -29,6 +30,29 @@ namespace PlatformGame
 
             base.Initialize();
         }
+        public void ReadPlatformFromFile(string fileName)
+        {
+            List<Rectangle> platformRectList = JsonFileHandler.AllInOneRecList(fileName, "platforms");
+            foreach (Rectangle rec in platformRectList)
+            {
+                Platform platform = new Platform(rec);
+                platformList.Add(platform);
+            }
+        }
+
+        public void ReadEnemiesFromFile(string fileName)
+        {
+            List<Rectangle> enemyRecList = JsonFileHandler.AllInOneRecList(fileName, "enemies");
+
+            foreach (Rectangle rec in enemyRecList)
+            {
+                Enemy enemy = new Enemy(TextureManager.allLinkTex, new Vector2(rec.X, rec.Y), 1,new Vector2(rec.Width, rec.Height), 0, 161,player);
+
+                enemyList.Add(enemy);
+                handler.objects.Add(enemy); 
+            }
+        }
+
 
         protected override void LoadContent()
         {
@@ -37,8 +61,8 @@ namespace PlatformGame
             handler = new GameObjectHandler();
             TextureManager.Textures(Content);
 
-            ReadFromFile("level_1-1.json");
-
+            ReadPlatformFromFile("level_1-1.json");
+            ReadEnemiesFromFile("level_1-1.json");
 
             Rectangle playerRec = JsonFileHandler.AllInOneRec("level_1-1.json", "player");
             player = new Player(TextureManager.allLinkTex,new Vector2(playerRec.X, playerRec.Y),8,frameSize,0,0);
@@ -49,16 +73,6 @@ namespace PlatformGame
                 handler.objects.Add(p);
             }
 
-        }
-
-        public void ReadFromFile(string fileName)
-        {
-            List<Rectangle> platformRectList = JsonFileHandler.AllInOneRecList(fileName, "platforms");
-            foreach (Rectangle rec in platformRectList)
-            {
-                Platform platform = new Platform(rec);
-                platformList.Add(platform);
-            }
         }
 
         protected override void Update(GameTime gameTime)

@@ -23,11 +23,17 @@
       "positionY": 300,
       "height": 50,
       "width": 150
+    },
+    {
+      "positionX": 0,
+      "positionY": 430,
+      "height": 100,
+      "width": 800
     }
   ],
   "player": {
     "positionX": 400,
-    "positionY": 250,
+    "positionY": 310,
     "height": 50,
     "width": 50
   },

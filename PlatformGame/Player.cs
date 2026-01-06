@@ -30,12 +30,15 @@ namespace PlatformGame
 
         public void CollidingWithPlatform(Platform platform)
         {
-            hitBoxLive.X = (int)pos.X;
-            hitBoxLive.Y = (int)pos.Y;
 
             if (platform == null) return;
             if (!hitBoxLive.Intersects(platform.hitBoxLive))
                 return;
+
+            // Update hitbox so it matches new position
+            hitBoxLive.Location = pos.ToPoint();
+            // Location refers to the top-left corner of the rectangle
+            // ToPoint() converts Vector2 to Point (int)
 
             Rectangle intersection = Rectangle.Intersect(this.hitBoxLive, platform.hitBoxLive);
 
@@ -44,14 +47,14 @@ namespace PlatformGame
             {
                 if (velocity.Y > 0) // From top
                 {
-                    pos.Y -= intersection.Height;
+                    pos.Y = platform.hitBoxLive.Top - hitBoxLive.Height;
                     isOnGround = true;
                     velocity.Y = 0;
                 }
 
                 else if (velocity.Y < 0) // From bottom
                 {
-                    pos.Y += intersection.Height;
+                    pos.Y = platform.hitBoxLive.Bottom + hitBoxLive.Height;
                     velocity.Y = 0;
                 }
             }
@@ -59,24 +62,18 @@ namespace PlatformGame
             // Horizontal
             else
             {
-                if (hitBoxLive.Top >= platform.hitBoxLive.Top + 10)
+                if (velocity.X > 0) // Moving right
                 {
-                    if (velocity.X > 0)
-                    {
-                        pos.X -= intersection.Width;
-                    }
-                    else if (velocity.X < 0)
-                    {
-                        pos.X += intersection.Width;
-                    }
+                    pos.X = platform.hitBoxLive.Left - hitBoxLive.Width;
+                    velocity.X = 0;
+                }
+                else if (velocity.X < 0) // Moving left
+                {
+                    pos.X = platform.hitBoxLive.Right + hitBoxLive.Width;
                     velocity.X = 0;
                 }
             }
-
-            // Update hitbox so it matches new position
             hitBoxLive.Location = pos.ToPoint();
-            // Location refers to the top-left corner of the rectangle
-            // ToPoint() converts Vector2 to Point (int)
         }
 
         public override void Update(GameTime gameTime)
