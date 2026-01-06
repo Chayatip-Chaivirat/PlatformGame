@@ -91,6 +91,8 @@ namespace PlatformGame
 
             player.isOnGround = false;
 
+            player.Animation(gameTime);
+
             foreach (Platform p in platformList)
             {
                 player.CollidingWithPlatform(p);
