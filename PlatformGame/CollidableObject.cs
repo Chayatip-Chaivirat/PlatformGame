@@ -9,20 +9,25 @@ namespace PlatformGame
     abstract class CollidableObject
     {
         protected Texture2D tex;
-        protected Vector2 pos;
-        protected Rectangle hitBoxLive;
-
-        public abstract void Update();
+        public Vector2 pos;
+        public Rectangle hitBoxLive;
+        protected Color color;
+        protected Vector2 velocity;
         public abstract void Draw(SpriteBatch spriteBatch);
-
-        public bool CollisionDetected(CollidableObject other)
-        {
-            return this.hitBoxLive.Intersects(other.hitBoxLive);
-        }
 
         public virtual void CollisionHandler(List<CollidableObject> listName)
         {
             listName.Remove(this); //this refers to the object in the class this method is used in
+        }
+
+        public virtual bool IsColliding(CollidableObject other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+
+            return hitBoxLive.Intersects(other.hitBoxLive);
         }
     }
 }

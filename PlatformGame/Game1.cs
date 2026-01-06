@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace PlatformGame
 {
@@ -8,6 +9,12 @@ namespace PlatformGame
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+
+        List<Platform> platformList = new List<Platform>();
+
+        GameObjectHandler handler;
+        Player player;
+        Vector2 frameSize = new Vector2(40, 40);
 
         public Game1()
         {
@@ -27,7 +34,29 @@ namespace PlatformGame
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            handler = new GameObjectHandler();
+            TextureManager.Textures(Content);
+
+            ReadFromFile("Level_1.json");
+
+            player = new Player(TextureManager.allLinkTex, new Vector2(100, 100), 8, frameSize, 0, 0);
+            handler.objects.Add(player);
+
+            foreach (Platform p in platformList)
+            {
+                handler.objects.Add(p);
+            }
+
+        }
+
+        public void ReadFromFile(string fileName)
+        {
+            List<Rectangle> platformRectList = JsonFileHandler.AllInOneRecList(fileName, "platforms");
+            foreach (Rectangle rec in platformRectList)
+            {
+                Platform platform = new Platform(rec);
+                platformList.Add(platform);
+            }
         }
 
         protected override void Update(GameTime gameTime)
@@ -35,7 +64,14 @@ namespace PlatformGame
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            PlayerKeyReader.Update();
+
+            handler.Update(gameTime);
+
+            foreach (Platform p in platformList)
+            {
+                player.CollidingWithPlatform(p);
+            }
 
             base.Update(gameTime);
         }
@@ -44,7 +80,9 @@ namespace PlatformGame
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            _spriteBatch.Begin();
+            handler.Draw(_spriteBatch);
+            _spriteBatch.End();
 
             base.Draw(gameTime);
         }
