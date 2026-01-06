@@ -92,38 +92,29 @@ namespace PlatformGame
 
             return this.attackHitBox.Intersects(other.hitBoxLive);
         }
-        protected void FaceLeft()
+
+        public void TurnLeft(GameTime gameTime)
         {
+            objectMoving = true;
             animationFX = SpriteEffects.None;
+            rotation = 0;
+            frameTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
+            rotation = MathHelper.ToRadians(0);
             velocity.X = -150f;
             faceLeft = true;
             faceRight = false;
         }
 
-        protected void FaceRight()
-        {
-            animationFX = SpriteEffects.FlipHorizontally;
-            velocity.X = 150f;
-            faceRight = true;
-            faceLeft = false;
-        }
-
-        public void TurnLeft(GameTime gameTime)
-        {
-            objectMoving = true;
-            FaceLeft();
-
-            if (gameTime != null)
-                frameTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
-        }
-
         public void TurnRight(GameTime gameTime)
         {
             objectMoving = true;
-            FaceRight();
-
-            if (gameTime != null)
-                frameTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
+            animationFX = SpriteEffects.FlipHorizontally;
+            rotation = 0;
+            frameTimer -= gameTime.ElapsedGameTime.TotalMilliseconds;
+            rotation = MathHelper.ToRadians(0);
+            velocity.X = 150f;
+            faceRight = true;
+            faceLeft = false;
         }
 
         public void Jump(GameTime gameTime)

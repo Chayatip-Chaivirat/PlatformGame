@@ -7,7 +7,7 @@ namespace PlatformGame
 {
     class GameObjectHandler
     {
-        public List<CollidableObject> objects = new List<CollidableObject>();
+        public List<CollidableObject> objects = new();
 
         public void Update(GameTime gameTime)
         {

@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
 namespace PlatformGame
 {
@@ -13,12 +12,10 @@ namespace PlatformGame
         Random random = new Random();
         int movementCode;
         Player player;
-        public List<Platform> platformList;
 
-        private Platform myPlatform;
-        private float leftBound;
-        private float rightBound;
-
+        //For testing
+        float patrollRangeLeft;
+        float patrollRangeRight;
         public Enemy(Texture2D tex, Vector2 pos, int totalFrame, Vector2 frameSize, int recX, int recY, Player player) : base(totalFrame, frameSize, recX, recY)
         {
             this.tex = tex;
@@ -39,30 +36,13 @@ namespace PlatformGame
             currentCD = 0.0f;
             normalAttackCD = 3f;
 
+            //For testing
+            patrollRangeLeft = 300;
+            patrollRangeRight = 500;
+
             this.player = player;
             isOnGround = true;
-
-            //FaceRight();
-
         }
-        public void AssignPlatform(List<Platform> platforms)
-        {
-            foreach (Platform p in platforms)
-            {
-                bool xOverlap = hitBoxLive.Right > p.hitBoxLive.Left && hitBoxLive.Left < p.hitBoxLive.Right;
-
-                bool abovePlatform = pos.Y + hitBoxLive.Height <= p.hitBoxLive.Top + 20;
-
-                if (xOverlap && abovePlatform)
-                {
-                    myPlatform = p;
-                    leftBound = p.hitBoxLive.Left;
-                    rightBound = p.hitBoxLive.Right - hitBoxLive.Width;
-                    return;
-                }
-            }
-        }
-
 
         public void ChangeMovementCode()
         {
@@ -75,97 +55,70 @@ namespace PlatformGame
 
             movementCode = newMovementCode;
         }
-        //public override void Update(GameTime gameTime)
-        //{
-        //    // Update hitbox so it matches new position
-        //    hitBoxLive.Location = pos.ToPoint();
-
-        //    float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
-        //    currentCD += dt;
-
-        //    // Update detection ranges
-        //    detectionRangeLeft.X = (int)pos.X - detectionRangeWidth;
-        //    detectionRangeLeft.Y = (int)pos.Y;
-
-        //    detectionRangeRight.X = (int)pos.X + tex.Width;
-        //    detectionRangeRight.Y = (int)pos.Y;
-
-        //    // Move
-        //    pos.X += velocity.X * dt;
-
-        //    // Clamp to platform
-        //    if (pos.X <= leftBound)
-        //    {
-        //        pos.X = leftBound;
-        //        TurnRight(gameTime);
-        //    }
-        //    else if (pos.X >= rightBound)
-        //    {
-        //        pos.X = rightBound;
-        //        TurnLeft(gameTime);
-        //    }
-
-
-        //    //Movement and Attack Logic
-
-        //    if (!attacking) { color = Color.White; }
-
-        //    if (DetectedLeft(player))
-        //    {
-        //        TurnLeft(gameTime);
-        //        pos.X += velocity.X * dt;
-        //        if (currentCD >= normalAttackCD)
-        //        {
-        //            NormalAttack(gameTime, player);
-        //            currentCD = 0.0f;
-        //            color = Color.Red; // For testing
-        //        }
-        //    }
-        //    else if (DetectedRight(player))
-        //    {
-        //        TurnRight(gameTime);
-        //        pos.X += velocity.X * dt;
-        //        if (currentCD >= normalAttackCD)
-        //        {
-        //            NormalAttack(gameTime, player);
-        //            currentCD = 0.0f;
-        //            color = Color.Red; // For testing
-        //        }
-        //    }
-
-        //    base.Update(gameTime);
-        //}
-
         public override void Update(GameTime gameTime)
         {
-            hitBoxLive.Location = pos.ToPoint();
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            pos.X += velocity.X * dt;
+            currentCD += dt;
 
-            if (pos.X <= leftBound)
+            // Update detection ranges
+            detectionRangeLeft.X = (int)pos.X - detectionRangeWidth;
+            detectionRangeLeft.Y = (int)pos.Y;
+
+            detectionRangeRight.X = (int)pos.X + tex.Width;
+            detectionRangeRight.Y = (int)pos.Y;
+
+            //Movement and Attack Logic
+
+            if (!attacking) { color = Color.White; }
+
+            if (DetectedLeft(player))
             {
-                pos.X = leftBound;
-                TurnRight(gameTime);
-            }
-            else if (pos.X >= rightBound)
-            {
-                pos.X = rightBound;
                 TurnLeft(gameTime);
+                pos.X += velocity.X * dt;
+                if (currentCD >= normalAttackCD)
+                {
+                    NormalAttack(gameTime, player);
+                    currentCD = 0.0f;
+                    color = Color.Red; // For testing
+                }
             }
-
-            // Player detection and chasing
-            if (DetectedLeft(player) && pos.X > leftBound)
-            {
-                TurnLeft(gameTime);
-            }
-            else if (DetectedRight(player) && pos.X < rightBound)
+            else if (DetectedRight(player))
             {
                 TurnRight(gameTime);
+                pos.X += velocity.X * dt;
+                if (currentCD >= normalAttackCD)
+                {
+                    NormalAttack(gameTime, player);
+                    currentCD = 0.0f;
+                    color = Color.Red; // For testing
+                }
             }
+            else
+            {
 
+                //for testing
+                //if (pos.X <= patrollRangeLeft)
+                //{
+                //    movementCode = 1; // Move right
+                //}
+                //else if (pos.X >= patrollRangeRight)
+                //{
+                //    movementCode = 2; // Move left
+                //}
 
+                //if (movementCode == 1)
+                //{
+                //    TurnRight(gameTime);
+                //    pos.X += velocity.X * dt;
+                //}
+                //else if (movementCode == 2)
+                //{
+                //    TurnLeft(gameTime);
+                //    pos.X += velocity.X * dt;
+                //}
+                velocity.X = 0;
+            }
             base.Update(gameTime);
         }
-
     }
 }

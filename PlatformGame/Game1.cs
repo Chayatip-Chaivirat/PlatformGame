@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
 using System.Collections.Generic;
 
 namespace PlatformGame
@@ -16,7 +15,6 @@ namespace PlatformGame
 
         GameObjectHandler handler;
         Player player;
-        Enemy Enemy;
         Vector2 frameSize = new Vector2(40, 40);
 
         public Game1()
@@ -49,16 +47,10 @@ namespace PlatformGame
             foreach (Rectangle rec in enemyRecList)
             {
                 Enemy enemy = new Enemy(TextureManager.allLinkTex, new Vector2(rec.X, rec.Y), 1,new Vector2(rec.Width, rec.Height), 0, 161,player);
-                enemy.platformList = platformList;
-                enemy.AssignPlatform(platformList);
 
                 enemyList.Add(enemy);
                 handler.objects.Add(enemy); 
             }
-            //foreach (Enemy e in enemyList)
-            //{
-            //    e.AssignPlatform(platformList);
-            //}
         }
 
 
@@ -70,6 +62,7 @@ namespace PlatformGame
             TextureManager.Textures(Content);
 
             ReadPlatformFromFile("level_1-1.json");
+            ReadEnemiesFromFile("level_1-1.json");
 
             Rectangle playerRec = JsonFileHandler.AllInOneRec("level_1-1.json", "player");
             player = new Player(TextureManager.allLinkTex,new Vector2(playerRec.X, playerRec.Y),8,frameSize,0,0);
@@ -79,7 +72,7 @@ namespace PlatformGame
             {
                 handler.objects.Add(p);
             }
-            ReadEnemiesFromFile("level_1-1.json");
+
         }
 
         protected override void Update(GameTime gameTime)
@@ -89,14 +82,14 @@ namespace PlatformGame
 
             PlayerKeyReader.Update();
 
+            handler.Update(gameTime);
+
             player.isOnGround = false;
 
             foreach (Platform p in platformList)
             {
                 player.CollidingWithPlatform(p);
             }
-
-            handler.Update(gameTime);
 
             base.Update(gameTime);
         }
