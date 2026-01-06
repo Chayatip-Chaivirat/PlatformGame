@@ -53,26 +53,18 @@ namespace PlatformGame
                 // Find the platform the enemy is on
                 foreach (Platform p in platformList)
                 {
-                    if (rec.Bottom == p.hitBoxLive.Top) // if enemy is on top of platform
+                    if (rec.Bottom == p.hitBoxLive.Top) // simple check: enemy is on top of platform
                     {
                         enemy.SetPlatform(p);
                         break;
                     }
                 }
-                Enemy enemy = new Enemy(TextureManager.allLinkTex, new Vector2(rec.X, rec.Y), 1,new Vector2(rec.Width, rec.Height), 0, 161,player);
-                enemy.platformList = platformList;
-                enemy.AssignPlatform(platformList);
 
                 enemyList.Add(enemy);
                 handler.objects.Add(enemy);
             }
 
-            //foreach (Enemy e in enemyList)
-            //{
-            //    e.AssignPlatform(platformList);
-            //}
         }
-
 
         protected override void LoadContent()
         {
@@ -92,6 +84,7 @@ namespace PlatformGame
                 handler.objects.Add(p);
             }
             ReadEnemiesFromFile("level_1-1.json");
+            player.enemies = enemyList;
         }
 
         protected override void Update(GameTime gameTime)

@@ -48,29 +48,30 @@ namespace PlatformGame
             //FaceRight();
 
         }
-        public void AssignPlatform(List<Platform> platforms)
-        {
-            foreach (Platform p in platforms)
-            {
-                bool xOverlap = hitBoxLive.Right > p.hitBoxLive.Left && hitBoxLive.Left < p.hitBoxLive.Right;
-
-                bool abovePlatform = pos.Y + hitBoxLive.Height <= p.hitBoxLive.Top + 20;
-
-                if (xOverlap && abovePlatform)
-                {
-                    myPlatform = p;
-                    leftBound = p.hitBoxLive.Left;
-                    rightBound = p.hitBoxLive.Right - hitBoxLive.Width;
-                    return;
-                }
-            }
-        }
-
 
         // Set the current platform the enemy is on
         public void SetPlatform(Platform platform)
         {
             currentPlatform = platform;
+        }
+
+        //Edge detection
+        private bool IsAtPlatformEdge()
+        {
+            if (currentPlatform == null) return true;
+
+            float leftEdge = currentPlatform.hitBoxLive.Left + 1;
+            float rightEdge = currentPlatform.hitBoxLive.Right - hitBoxLive.Width - 1;
+
+            // Moving left?
+            if (velocity.X < 0 && pos.X <= leftEdge)
+                return true;
+
+            // Moving right?
+            if (velocity.X > 0 && pos.X >= rightEdge)
+                return true;
+
+            return false; // safe to move
         }
 
         public void ChangeMovementCode()
@@ -84,103 +85,9 @@ namespace PlatformGame
 
             movementCode = newMovementCode;
         }
-        //public override void Update(GameTime gameTime)
-        //{
-        //    // Update hitbox so it matches new position
-        //    hitBoxLive.Location = pos.ToPoint();
-
-        //    float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
-        //    currentCD += dt;
-
-        //    // Update detection ranges
-        //    detectionRangeLeft.X = (int)pos.X - detectionRangeWidth;
-        //    detectionRangeLeft.Y = (int)pos.Y;
-
-        //    detectionRangeRight.X = (int)pos.X + tex.Width;
-        //    detectionRangeRight.Y = (int)pos.Y;
-
-        //    // Move
-        //    pos.X += velocity.X * dt;
-
-        //    // Clamp to platform
-        //    if (pos.X <= leftBound)
-        //    {
-        //        pos.X = leftBound;
-        //        TurnRight(gameTime);
-        //    }
-        //    else if (pos.X >= rightBound)
-        //    {
-        //        pos.X = rightBound;
-        //        TurnLeft(gameTime);
-        //    }
-
-
-        //    //Movement and Attack Logic
-
-        //    if (!attacking) { color = Color.White; }
-
-        //    if (DetectedLeft(player))
-        //    {
-        //        TurnLeft(gameTime);
-        //        pos.X += velocity.X * dt;
-        //        if (currentCD >= normalAttackCD)
-        //        {
-        //            NormalAttack(gameTime, player);
-        //            currentCD = 0.0f;
-        //            color = Color.Red; // For testing
-        //        }
-        //    }
-        //    else if (DetectedRight(player))
-        //    {
-        //        TurnRight(gameTime);
-        //        pos.X += velocity.X * dt;
-        //        if (currentCD >= normalAttackCD)
-        //        {
-        //            NormalAttack(gameTime, player);
-        //            currentCD = 0.0f;
-        //            color = Color.Red; // For testing
-        //        }
-        //    }
-        //    else
-        //    {
-
-        //        //for testing
-        //        //if (pos.X <= patrollRangeLeft)
-        //        //{
-        //        //    movementCode = 1; // Move right
-        //        //}
-        //        //else if (pos.X >= patrollRangeRight)
-        //        //{
-        //        //    movementCode = 2; // Move left
-        //        //}
-
-        //        //if (movementCode == 1)
-        //        //{
-        //        //    TurnRight(gameTime);
-        //        //    pos.X += velocity.X * dt;
-        //        //}
-        //        //else if (movementCode == 2)
-        //        //{
-        //        //    TurnLeft(gameTime);
-        //        //    pos.X += velocity.X * dt;
-        //        //}
-        //        velocity.X = 0;
-        //    }
-
-        //    base.Update(gameTime);
-        //}
-
         public override void Update(GameTime gameTime)
         {
-            hitBoxLive.Location = pos.ToPoint();
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            pos.X += velocity.X * dt;
-
-            // Update detection ranges
-            detectionRangeLeft.X = (int)pos.X - detectionRangeWidth;
-            detectionRangeLeft.Y = (int)pos.Y;
-            detectionRangeRight.X = (int)pos.X + tex.Width;
-            detectionRangeRight.Y = (int)pos.Y;
 
             // Movement logic
             if (!attacking) color = Color.White;
@@ -188,39 +95,46 @@ namespace PlatformGame
             if (DetectedLeft(player))
             {
                 TurnLeft(gameTime);
-                MoveWithPlatformCheck(dt);
+                if (!IsAtPlatformEdge())
+                    pos.X += velocity.X * dt; // move
                 AttackIfReady(gameTime, player);
-            if (pos.X <= leftBound)
-            {
-                pos.X = leftBound;
-                TurnRight(gameTime);
             }
-            else if (pos.X >= rightBound)
-            {
-                pos.X = rightBound;
-                TurnLeft(gameTime);
-            }
-
-            // Player detection and chasing
-            if (DetectedLeft(player) && pos.X > leftBound)
-            {
-                TurnLeft(gameTime);
-            }
-            else if (DetectedRight(player) && pos.X < rightBound)
+            else if (DetectedRight(player))
             {
                 TurnRight(gameTime);
-                MoveWithPlatformCheck(dt);
+                if (!IsAtPlatformEdge())
+                    pos.X += velocity.X * dt; // move
                 AttackIfReady(gameTime, player);
             }
             else
             {
-                velocity.X = 0; // idle
-            }
+                if (movementCode == 1) // Move right
+                {
+                    TurnRight(gameTime);
+                    if (!IsAtPlatformEdge())
+                        pos.X += velocity.X * dt;
+                    else
+                        movementCode = 2; // switch direction
+                }
+                else if (movementCode == 2) // Move left
+                {
+                    TurnLeft(gameTime);
+                    if (!IsAtPlatformEdge())
+                        pos.X += velocity.X * dt;
+                    else
+                        movementCode = 1; // switch direction
+                }
+
             }
 
+            // Update hitbox
+            hitBoxLive.Location = pos.ToPoint();
+
+            UpdateDetectionRanges();
 
             base.Update(gameTime);
         }
+
 
         // Move but stop at platform edges
         private void MoveWithPlatformCheck(float dt)
@@ -250,6 +164,14 @@ namespace PlatformGame
                 color = Color.Red; // for testing
             }
         }
+        private void UpdateDetectionRanges()
+        {
+            detectionRangeLeft.X = (int)pos.X - detectionRangeWidth;
+            detectionRangeLeft.Y = (int)pos.Y;
+            detectionRangeRight.X = (int)pos.X + tex.Width;
+            detectionRangeRight.Y = (int)pos.Y;
+        }
+
 
     }
 }

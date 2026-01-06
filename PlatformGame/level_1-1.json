@@ -32,34 +32,28 @@
     }
   ],
   "player": {
-    "positionX": 400,
-    "positionY": 310,
+    "positionX": 510,
+    "positionY": 75,
     "height": 50,
     "width": 50
   },
   "enemies": [
     {
-      "positionX": 100,
+      "positionX": 150,
       "positionY": 75,
       "height": 50,
       "width": 48
     },
     {
-      "positionX": 200,
+      "positionX": 250,
       "positionY": 175,
       "height": 50,
       "width": 48
     },
     {
-      "positionX": 500,
-      "positionY": 75,
-      "height": 50,
-      "width": 48
-    },
-    {
-      "positionX": 500,
+      "positionX": 450,
       "positionY": 275,
-      "height": 50,
+      "height": 47,
       "width": 48
     }
   ]
