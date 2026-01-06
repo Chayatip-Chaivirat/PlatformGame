@@ -82,7 +82,6 @@ namespace PlatformGame
         public override void Update(GameTime gameTime)
         {
             objectMoving = false;
-            isOnGround = false;
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (!isOnGround)
@@ -90,12 +89,7 @@ namespace PlatformGame
                 velocity.Y += 500f * dt;
                 pos.Y += velocity.Y * dt;
             }
-            //if (pos.Y >= 400) // temp solution for not having a platform
-            //{
-            //    pos.Y = 400;
-            //    isOnGround = true;
-            //    velocity.Y = 0;
-            //}
+
             if (!attacking)
             {
                 srcRec = new Rectangle(0, 0, (int)frameSize.X, (int)frameSize.Y);
@@ -134,7 +128,6 @@ namespace PlatformGame
             else
             {
                 velocity.X = 0;
-                //srcRec = new Rectangle(0, 0, (int)frameSize.X, (int)frameSize.Y);
             }
             if (PlayerKeyReader.KeyPressedAndHold(Keys.Space) && isOnGround)
             {
