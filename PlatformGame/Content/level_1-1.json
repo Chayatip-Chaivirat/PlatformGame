@@ -1,0 +1,60 @@
+{
+  "platforms": [
+    {
+      "positionX": 100,
+      "positionY": 100,
+      "height": 50,
+      "width": 100
+    },
+    {
+      "positionX": 200,
+      "positionY": 200,
+      "height": 50,
+      "width": 150
+    },
+    {
+      "positionX": 500,
+      "positionY": 100,
+      "height": 50,
+      "width": 200
+    },
+    {
+      "positionX": 400,
+      "positionY": 300,
+      "height": 50,
+      "width": 150
+    }
+  ],
+  "player": {
+    "positionX": 400,
+    "positionY": 250,
+    "height": 50,
+    "width": 50
+  },
+  "enemies": [
+    {
+      "positionX": 100,
+      "positionY": 75,
+      "height": 25,
+      "width": 25
+    },
+    {
+      "positionX": 200,
+      "positionY": 175,
+      "height": 25,
+      "width": 25
+    },
+    {
+      "positionX": 500,
+      "positionY": 75,
+      "height": 25,
+      "width": 25
+    },
+    {
+      "positionX": 500,
+      "positionY": 275,
+      "height": 25,
+      "width": 25
+    }
+  ]
+}

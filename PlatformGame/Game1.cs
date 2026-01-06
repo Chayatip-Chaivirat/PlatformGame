@@ -37,7 +37,12 @@ namespace PlatformGame
             handler = new GameObjectHandler();
             TextureManager.Textures(Content);
 
-            ReadFromFile("Level_1.json");
+            ReadFromFile("Content/level_1-1.json");
+
+            Rectangle playerRec = JsonFileHandler.AllInOneRec("Content/level_1-1.json", "player");
+            player = new Player(TextureManager.allLinkTex,new Vector2(playerRec.X, playerRec.Y),8,frameSize,0,0);
+            handler.objects.Add(player);
+
 
             player = new Player(TextureManager.allLinkTex, new Vector2(100, 100), 8, frameSize, 0, 0);
             handler.objects.Add(player);
