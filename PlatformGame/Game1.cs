@@ -167,7 +167,6 @@ namespace PlatformGame
                 _spriteBatch.Begin();
                 handler.Draw(_spriteBatch);
                 _spriteBatch.End();
-
             }
 
             base.Draw(gameTime);
