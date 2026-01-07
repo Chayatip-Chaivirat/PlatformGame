@@ -90,6 +90,8 @@ namespace PlatformGame
             bigObject.Add("enemies", enemyArray);
             bigObject.Add("platforms", platformArray);
 
+            System.Diagnostics.Debug.WriteLine(bigObject.ToString());
+            //File.Open("jsonfile.json", FileMode.Create);
             File.WriteAllText(fileName, bigObject.ToString());
         }
 

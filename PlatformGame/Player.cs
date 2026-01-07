@@ -178,8 +178,6 @@ namespace PlatformGame
                 }
             }
 
-
-
             else
             {
                 velocity.X = 0;

@@ -26,7 +26,7 @@ namespace PlatformGame
         {
             this.tex = tex;
             this.pos = pos;
-            hitBoxLive = new Rectangle((int)pos.X, (int)pos.Y, tex.Width, tex.Height);
+            hitBoxLive = new Rectangle((int)pos.X, (int)pos.Y, (int)frameSize.X, (int)frameSize.Y);
             objectMoving = false;
             scale = 1;
             velocity = new Vector2(200, 100);
