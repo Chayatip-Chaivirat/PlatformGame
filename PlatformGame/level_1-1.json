@@ -32,7 +32,7 @@
     }
   ],
   "player": {
-    "positionX": 0,
+    "positionX": 50,
     "positionY": 400,
     "height": 40,
     "width": 40

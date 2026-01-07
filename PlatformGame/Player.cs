@@ -30,6 +30,11 @@ namespace PlatformGame
             normalAttackCD = 0.5f;
         }
 
+        public bool PlatformCollision(Platform platform)
+        {
+            return Vector2.Distance(pos, platform.pos) < (hitBoxLive.Width + platform.hitBoxLive.Width);
+        }
+
         public void CollidingWithPlatform(Platform platform)
         {
             if (platform == null) return;
