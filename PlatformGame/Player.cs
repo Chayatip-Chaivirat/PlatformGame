@@ -77,6 +77,20 @@ namespace PlatformGame
             hitBoxLive.Location = pos.ToPoint();
         }
 
+        private Rectangle GetAttackHitBox()
+        {
+            int width = (int)frameSize.X; 
+            int height = (int)frameSize.Y;
+            if (faceRight)
+            { 
+                    return new Rectangle((int)pos.X + hitBoxLive.Width, (int)pos.Y, width, height); 
+            }
+            else
+            {
+                return new Rectangle((int)pos.X - width, (int)pos.Y, width, height); 
+            }
+        }
+
         public override void Update(GameTime gameTime)
         {
             objectMoving = false;
@@ -116,20 +130,42 @@ namespace PlatformGame
                 TurnRight(gameTime);
                 pos.X += velocity.X * dt;
             }
-            else if (PlayerKeyReader.KeyPressedAndHold(Keys.F) || PlayerKeyReader.LeftClick() && currentCD <= 0)
+            else if (PlayerKeyReader.KeyPressedAndHold(Keys.F) || PlayerKeyReader.LeftClick())
             {
-                foreach (Enemy enemy in enemies)
+                if (currentCD <= 0)
                 {
-                    if (enemies != null)
+                    attacking = true;
+                    attackHitBox = GetAttackHitBox(); // <-- must set this first!
+
+                    Enemy closest = null;
+                    float closestDist = float.MaxValue;
+
+                    foreach (Enemy e in enemies)
                     {
-                        foreach (Enemy e in enemies)
+                        if (e == null || e.maxHP <= 0) continue;
+
+                        if (attackHitBox.Intersects(e.hitBoxLive))
                         {
-                            NormalAttack(gameTime, e);
+                            float dist = Vector2.Distance(this.pos, e.pos);
+                            if (dist < closestDist)
+                            {
+                                closestDist = dist;
+                                closest = e;
+                            }
                         }
                     }
-                    currentCD = normalAttackCD;
+
+                    if (closest != null)
+                    {
+                        closest.maxHP -= baseAttack;
+                    }
+
+                    currentCD = normalAttackCD; // reset cooldown
                 }
             }
+
+
+
             else
             {
                 velocity.X = 0;

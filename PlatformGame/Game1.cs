@@ -106,6 +106,16 @@ namespace PlatformGame
 
             handler.Update(gameTime);
 
+            for (int i = enemyList.Count - 1; i >= 0; i--)
+            {
+                if (enemyList[i].maxHP <= 0)
+                {
+                    handler.objects.Remove(enemyList[i]); // also remove from handler
+                    enemyList.RemoveAt(i);
+                }
+            }
+
+
             base.Update(gameTime);
         }
 

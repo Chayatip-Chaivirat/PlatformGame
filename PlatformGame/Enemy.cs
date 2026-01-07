@@ -31,7 +31,7 @@ namespace PlatformGame
             scale = 1;
             velocity = new Vector2(200, 100);
             color = Color.White;
-            maxHP = 10;
+            maxHP = 4;
             attackHitBox = Rectangle.Empty;
             detectionRangeWidth = tex.Width * 2;
             detectionRangeHeight = tex.Height;
@@ -44,9 +44,6 @@ namespace PlatformGame
 
             this.player = player;
             isOnGround = true;
-
-            //FaceRight();
-
         }
 
         // Set the current platform the enemy is on
@@ -56,23 +53,22 @@ namespace PlatformGame
         }
 
         //Edge detection
-        private bool IsAtPlatformEdge()
+        private bool IsAtLeftEdge()
         {
             if (currentPlatform == null) return true;
 
-            float leftEdge = currentPlatform.hitBoxLive.Left + 1;
-            float rightEdge = currentPlatform.hitBoxLive.Right - hitBoxLive.Width - 1;
-
-            // Moving left?
-            if (velocity.X < 0 && pos.X <= leftEdge)
-                return true;
-
-            // Moving right?
-            if (velocity.X > 0 && pos.X >= rightEdge)
-                return true;
-
-            return false; // safe to move
+            float leftEdge = currentPlatform.hitBoxLive.Left + 1; 
+            return pos.X <= leftEdge;
         }
+
+        private bool IsAtRightEdge()
+        {
+            if (currentPlatform == null) return true;
+
+            float rightEdge = currentPlatform.hitBoxLive.Right - hitBoxLive.Width - 1; 
+            return pos.X >= rightEdge;
+        }
+
 
         public void ChangeMovementCode()
         {
@@ -95,15 +91,15 @@ namespace PlatformGame
             if (DetectedLeft(player))
             {
                 TurnLeft(gameTime);
-                if (!IsAtPlatformEdge())
-                    pos.X += velocity.X * dt; // move
+                if (!IsAtLeftEdge())
+                    pos.X += velocity.X * dt;
                 AttackIfReady(gameTime, player);
             }
             else if (DetectedRight(player))
             {
                 TurnRight(gameTime);
-                if (!IsAtPlatformEdge())
-                    pos.X += velocity.X * dt; // move
+                if (!IsAtRightEdge())
+                    pos.X += velocity.X * dt;
                 AttackIfReady(gameTime, player);
             }
             else
@@ -111,7 +107,7 @@ namespace PlatformGame
                 if (movementCode == 1) // Move right
                 {
                     TurnRight(gameTime);
-                    if (!IsAtPlatformEdge())
+                    if (!IsAtRightEdge())
                         pos.X += velocity.X * dt;
                     else
                         movementCode = 2; // switch direction
@@ -119,12 +115,11 @@ namespace PlatformGame
                 else if (movementCode == 2) // Move left
                 {
                     TurnLeft(gameTime);
-                    if (!IsAtPlatformEdge())
+                    if (!IsAtLeftEdge())
                         pos.X += velocity.X * dt;
                     else
                         movementCode = 1; // switch direction
                 }
-
             }
 
             // Update hitbox
@@ -133,25 +128,6 @@ namespace PlatformGame
             UpdateDetectionRanges();
 
             base.Update(gameTime);
-        }
-
-
-        // Move but stop at platform edges
-        private void MoveWithPlatformCheck(float dt)
-        {
-            if (currentPlatform == null) return;
-
-            float nextPosX = pos.X + velocity.X * dt;
-
-            // Platform boundaries
-            float leftEdge = currentPlatform.hitBoxLive.Left;
-            float rightEdge = currentPlatform.hitBoxLive.Right - hitBoxLive.Width;
-
-            // Clamp movement to platform
-            if (nextPosX < leftEdge) nextPosX = leftEdge;
-            if (nextPosX > rightEdge) nextPosX = rightEdge;
-
-            pos.X = nextPosX;
         }
 
         // Handle attack cooldown
@@ -171,7 +147,5 @@ namespace PlatformGame
             detectionRangeRight.X = (int)pos.X + tex.Width;
             detectionRangeRight.Y = (int)pos.Y;
         }
-
-
     }
 }
