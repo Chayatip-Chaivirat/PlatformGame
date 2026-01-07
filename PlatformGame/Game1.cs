@@ -104,7 +104,7 @@ namespace PlatformGame
 
             if (gameState == GameState.Starting)
             {
-                if (PlayerKeyReader.KeyPressed(Keys.Enter))
+                if (PlayerKeyReader.KeyPressed(Keys.Enter) || PlayerKeyReader.KeyPressed(Keys.Space))
                 {
                     gameState = GameState.Playing;
                 }
@@ -145,7 +145,7 @@ namespace PlatformGame
 
             if (gameState == GameState.GameOver || gameState == GameState.Victory)
             {
-                if (PlayerKeyReader.KeyPressed(Keys.Enter))
+                if (PlayerKeyReader.KeyPressed(Keys.Enter) || PlayerKeyReader.KeyPressed(Keys.Space))
                 {
                     // Restart the game
                     handler.objects.Clear();
