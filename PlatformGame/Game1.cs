@@ -152,7 +152,7 @@ namespace PlatformGame
                     platformList.Clear();
                     enemyList.Clear();
                     LoadContent();
-                    gameState = GameState.Starting;
+                    gameState = GameState.Playing;
                 }
             }
 
