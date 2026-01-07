@@ -16,8 +16,17 @@ namespace PlatformGame
 
         GameObjectHandler handler;
         Player player;
-        Enemy Enemy;
         Vector2 frameSize = new Vector2(40, 40);
+
+        //GameState
+        static GameState gameState;
+        enum GameState
+        {
+            Starting,
+            Playing,
+            GameOver,
+            Victory
+        }
 
         public Game1()
         {
@@ -91,30 +100,61 @@ namespace PlatformGame
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
             PlayerKeyReader.Update();
 
-            player.isOnGround = false;
-            player.Animation(gameTime);
-
-            player.Animation(gameTime);
-
-            foreach (Platform p in platformList)
+            if (gameState == GameState.Starting)
             {
-                player.CollidingWithPlatform(p);
-            }
-
-            handler.Update(gameTime);
-
-            for (int i = enemyList.Count - 1; i >= 0; i--)
-            {
-                if (enemyList[i].maxHP <= 0)
+                if (PlayerKeyReader.KeyPressed(Keys.Enter))
                 {
-                    handler.objects.Remove(enemyList[i]); // also remove from handler
-                    enemyList.RemoveAt(i);
+                    gameState = GameState.Playing;
                 }
             }
 
+            if (gameState == GameState.Playing)
+            {
+
+                player.isOnGround = false;
+                player.Animation(gameTime);
+
+
+                foreach (Platform p in platformList)
+                {
+                    player.CollidingWithPlatform(p);
+                }
+
+                handler.Update(gameTime);
+
+                for (int i = enemyList.Count - 1; i >= 0; i--)
+                {
+                    if (enemyList[i].maxHP <= 0)
+                    {
+                        handler.objects.Remove(enemyList[i]); // also remove from handler
+                        enemyList.RemoveAt(i);
+                    }
+                }
+                if (enemyList.Count == 0)
+                {
+                    gameState = GameState.Victory;
+                }
+            }
+
+            if (player.maxHP == 0)
+            {
+                gameState = GameState.GameOver;
+            }
+
+            if (gameState == GameState.GameOver || gameState == GameState.Victory)
+            {
+                if (PlayerKeyReader.KeyPressed(Keys.Enter))
+                {
+                    // Restart the game
+                    handler.objects.Clear();
+                    platformList.Clear();
+                    enemyList.Clear();
+                    LoadContent();
+                    gameState = GameState.Starting;
+                }
+            }
 
             base.Update(gameTime);
         }
@@ -122,10 +162,13 @@ namespace PlatformGame
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+            if (gameState == GameState.Playing)
+            {
+                _spriteBatch.Begin();
+                handler.Draw(_spriteBatch);
+                _spriteBatch.End();
 
-            _spriteBatch.Begin();
-            handler.Draw(_spriteBatch);
-            _spriteBatch.End();
+            }
 
             base.Draw(gameTime);
         }

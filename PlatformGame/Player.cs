@@ -26,7 +26,7 @@ namespace PlatformGame
             attackHitBox = Rectangle.Empty;
             baseAttack = 3;
             currentCD = 0.0f;
-            normalAttackCD = 1f;
+            normalAttackCD = 0.5f;
         }
 
         public void CollidingWithPlatform(Platform platform)
@@ -135,10 +135,10 @@ namespace PlatformGame
                 if (currentCD <= 0)
                 {
                     attacking = true;
-                    attackHitBox = GetAttackHitBox(); // <-- must set this first!
+                    attackHitBox = GetAttackHitBox(); 
 
                     Enemy closest = null;
-                    float closestDist = float.MaxValue;
+                    float closestDistance = float.MaxValue;
 
                     foreach (Enemy e in enemies)
                     {
@@ -146,16 +146,16 @@ namespace PlatformGame
 
                         if (attackHitBox.Intersects(e.hitBoxLive))
                         {
-                            float dist = Vector2.Distance(this.pos, e.pos);
-                            if (dist < closestDist)
+                            float distance = Vector2.Distance(this.pos, e.pos); // Calculate distance to enemy
+                            if (distance < closestDistance) // Find the closest enemy
                             {
-                                closestDist = dist;
+                                closestDistance = distance; // Update closest distance
                                 closest = e;
                             }
                         }
                     }
 
-                    if (closest != null)
+                    if (closest != null) // If an enemy was hit
                     {
                         closest.maxHP -= baseAttack;
                     }
