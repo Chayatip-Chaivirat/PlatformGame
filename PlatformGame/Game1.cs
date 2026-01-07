@@ -16,6 +16,7 @@ namespace PlatformGame
 
         GameObjectHandler handler;
         Player player;
+        Editor editor;
 
         //GameState
         static GameState gameState;
@@ -86,7 +87,7 @@ namespace PlatformGame
             ReadPlatformFromFile("level_1-1.json");
 
             Rectangle playerRec = JsonFileHandler.AllInOneRec("level_1-1.json", "player");
-            player = new Player(TextureManager.allLinkTex,new Vector2(playerRec.X, playerRec.Y),8,new Vector2(playerRec.Width, playerRec.Height),0,0);
+            player = new Player(TextureManager.allLinkTex, new Vector2(playerRec.X, playerRec.Y), 8, new Vector2(playerRec.Width, playerRec.Height), 0, 0);
             handler.objects.Add(player);
 
             foreach (Platform p in platformList)
@@ -95,6 +96,7 @@ namespace PlatformGame
             }
             ReadEnemiesFromFile("level_1-1.json");
             player.enemies = enemyList;
+            editor = new Editor();
         }
 
 
@@ -110,7 +112,7 @@ namespace PlatformGame
                 {
                     gameState = GameState.Playing;
                 }
-                if (PlayerKeyReader.KeyPressed(Keys.E))
+                if (PlayerKeyReader.KeyPressed(Keys.R))
                 {
                     gameState = GameState.Editor;
                 }
@@ -180,7 +182,8 @@ namespace PlatformGame
 
             if (gameState == GameState.Editor)
             {
-
+                editor.Update();
+                Window.Title = "EDITOR: " + "is saved: " + editor.IsSaved;
             }
 
             base.Update(gameTime);
@@ -193,6 +196,13 @@ namespace PlatformGame
             {
                 _spriteBatch.Begin();
                 handler.Draw(_spriteBatch);
+                _spriteBatch.End();
+            }
+
+            if (gameState == GameState.Editor)
+            {
+                _spriteBatch.Begin();
+                editor.Draw(_spriteBatch);
                 _spriteBatch.End();
             }
 
