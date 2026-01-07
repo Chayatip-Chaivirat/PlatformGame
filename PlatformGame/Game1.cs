@@ -16,7 +16,7 @@ namespace PlatformGame
 
         GameObjectHandler handler;
         Player player;
-        Vector2 frameSize = new Vector2(40, 40);
+        Editor editor;
 
         //GameState
         static GameState gameState;
@@ -25,7 +25,8 @@ namespace PlatformGame
             Starting,
             Playing,
             GameOver,
-            Victory
+            Victory,
+            Editor
         }
 
         public Game1()
@@ -46,7 +47,8 @@ namespace PlatformGame
             List<Rectangle> platformRectList = JsonFileHandler.AllInOneRecList(fileName, "platforms");
             foreach (Rectangle rec in platformRectList)
             {
-                Platform platform = new Platform(rec);
+                bool isGoal = rec.X == 500 && rec.Y == 130;
+                Platform platform = new Platform(rec, isGoal);
                 platformList.Add(platform);
             }
         }
@@ -85,7 +87,7 @@ namespace PlatformGame
             ReadPlatformFromFile("level_1-1.json");
 
             Rectangle playerRec = JsonFileHandler.AllInOneRec("level_1-1.json", "player");
-            player = new Player(TextureManager.allLinkTex,new Vector2(playerRec.X, playerRec.Y),8,frameSize,0,0);
+            player = new Player(TextureManager.allLinkTex, new Vector2(playerRec.X, playerRec.Y), 8, new Vector2(playerRec.Width, playerRec.Height), 0, 0);
             handler.objects.Add(player);
 
             foreach (Platform p in platformList)
@@ -94,7 +96,9 @@ namespace PlatformGame
             }
             ReadEnemiesFromFile("level_1-1.json");
             player.enemies = enemyList;
+            editor = new Editor();
         }
+
 
         protected override void Update(GameTime gameTime)
         {
@@ -104,9 +108,13 @@ namespace PlatformGame
 
             if (gameState == GameState.Starting)
             {
-                if (PlayerKeyReader.KeyPressed(Keys.Enter))
+                if (PlayerKeyReader.KeyPressed(Keys.Enter) || PlayerKeyReader.KeyPressed(Keys.Space))
                 {
                     gameState = GameState.Playing;
+                }
+                if (PlayerKeyReader.KeyPressed(Keys.R))
+                {
+                    gameState = GameState.Editor;
                 }
             }
 
@@ -115,12 +123,28 @@ namespace PlatformGame
 
                 player.isOnGround = false;
                 player.Animation(gameTime);
-
+                player.ClampToScreen(GraphicsDevice.Viewport);
 
                 foreach (Platform p in platformList)
                 {
+                    if (p.isGoal)
+                    {
+                        Rectangle playerBox = player.hitBoxLive;
+                        Rectangle goalBox = p.hitBoxLive;
+
+                        bool landingOnTop = player.velocity.Y > 0 && playerBox.Bottom <= goalBox.Top + 5 && playerBox.Right > goalBox.Left && playerBox.Left < goalBox.Right;
+
+                        if (landingOnTop)
+                        {
+                            gameState = GameState.Victory;
+                            return;
+                        }
+                    }
+
+                    // Normal collision
                     player.CollidingWithPlatform(p);
                 }
+
 
                 handler.Update(gameTime);
 
@@ -145,15 +169,21 @@ namespace PlatformGame
 
             if (gameState == GameState.GameOver || gameState == GameState.Victory)
             {
-                if (PlayerKeyReader.KeyPressed(Keys.Enter))
+                if (PlayerKeyReader.KeyPressed(Keys.Enter) || PlayerKeyReader.KeyPressed(Keys.Space))
                 {
                     // Restart the game
                     handler.objects.Clear();
                     platformList.Clear();
                     enemyList.Clear();
                     LoadContent();
-                    gameState = GameState.Playing;
+                    gameState = GameState.Starting;
                 }
+            }
+
+            if (gameState == GameState.Editor)
+            {
+                editor.Update();
+                Window.Title = "EDITOR: " + "is saved: " + editor.IsSaved;
             }
 
             base.Update(gameTime);
@@ -166,6 +196,13 @@ namespace PlatformGame
             {
                 _spriteBatch.Begin();
                 handler.Draw(_spriteBatch);
+                _spriteBatch.End();
+            }
+
+            if (gameState == GameState.Editor)
+            {
+                _spriteBatch.Begin();
+                editor.Draw(_spriteBatch);
                 _spriteBatch.End();
             }
 

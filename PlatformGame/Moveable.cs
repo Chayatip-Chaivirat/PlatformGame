@@ -16,7 +16,6 @@ namespace PlatformGame
         protected SpriteEffects animationFX = SpriteEffects.None;
         protected float rotation = 0;
         protected float scale;
-        protected Vector2 origin;
         protected int recX;
         protected int recY;
 
@@ -45,14 +44,13 @@ namespace PlatformGame
             this.recX = recX;
             this.recY = recY;
             srcRec = new Rectangle(recX, recY, (int)frameSize.X, (int)frameSize.Y);
-            origin = new Vector2((int)frameSize.X / 2, (int)frameSize.Y / 2);
             isOnGround = true;
         }
 
         public virtual void Update(GameTime gameTime)
         {
-            hitBoxLive.X = (int)pos.X;
-            hitBoxLive.Y = (int)pos.Y;
+            hitBoxLive.X = (int)pos.X - (int)frameSize.X/2;
+            hitBoxLive.Y = (int)pos.Y - (int)frameSize.Y/2;
         }
 
         public void Animation(GameTime gameTime)
@@ -159,7 +157,8 @@ namespace PlatformGame
         {
             if (tex != null)
             {
-                spriteBatch.Draw(tex, pos, srcRec, color, rotation, origin, scale, animationFX, 1);
+                //spriteBatch.Draw(TextureManager.wallTex, hitBoxLive, color);
+                spriteBatch.Draw(tex, pos, srcRec, color);
             }
         }
     }

@@ -14,13 +14,13 @@
     },
     {
       "positionX": 500,
-      "positionY": 100,
+      "positionY": 130,
       "height": 50,
       "width": 200
     },
     {
       "positionX": 400,
-      "positionY": 300,
+      "positionY": 320,
       "height": 50,
       "width": 150
     },
@@ -32,27 +32,27 @@
     }
   ],
   "player": {
-    "positionX": 510,
-    "positionY": 75,
-    "height": 50,
-    "width": 50
+    "positionX": 50,
+    "positionY": 400,
+    "height": 40,
+    "width": 40
   },
   "enemies": [
     {
       "positionX": 150,
-      "positionY": 75,
+      "positionY": 50,
       "height": 50,
       "width": 48
     },
     {
       "positionX": 250,
-      "positionY": 175,
+      "positionY": 150,
       "height": 50,
       "width": 48
     },
     {
       "positionX": 450,
-      "positionY": 275,
+      "positionY": 270,
       "height": 47,
       "width": 48
     }

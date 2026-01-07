@@ -30,7 +30,7 @@ namespace PlatformGame
             JObject obj = (JObject)wholeObject.GetValue(propertyName);
 
             int x = Convert.ToInt32(obj.GetValue("positionX"));
-            int y = Convert.ToInt32(obj.GetValue("postitionY"));
+            int y = Convert.ToInt32(obj.GetValue("positionY"));
             int width = Convert.ToInt32(obj.GetValue("width"));
             int height = Convert.ToInt32(obj.GetValue("height"));
             Rectangle rec = new Rectangle(x, y, width, height);
@@ -62,6 +62,48 @@ namespace PlatformGame
             }
 
             return recList;
+        }
+        public static void WriteToJsonFile(string fileName, List<CollidableObject> gList)
+        {
+            JArray enemyArray = new JArray();
+            JArray platformArray = new JArray();
+            JObject bigObject = new JObject();
+
+            for (int i = 0; i < gList.Count; i++)
+            {
+                if (gList[i] is Enemy)
+                {
+                    JObject obj = CreateObject(gList[i].hitBoxLive);
+                    enemyArray.Add(obj);
+                }
+                else if (gList[i] is Platform)
+                {
+                    JObject obj = CreateObject(gList[i].hitBoxLive);
+                    platformArray.Add(obj);
+                }
+                else if (gList[i] is Player)
+                {
+                    JObject obj = CreateObject(gList[i].hitBoxLive);
+                    bigObject.Add("player",obj);
+                }
+            }
+            bigObject.Add("enemies", enemyArray);
+            bigObject.Add("platforms", platformArray);
+
+            System.Diagnostics.Debug.WriteLine(bigObject.ToString());
+            //File.Open("jsonfile.json", FileMode.Create);
+            File.WriteAllText(fileName, bigObject.ToString());
+        }
+
+        private static JObject CreateObject(Rectangle rect)
+        {
+            JObject obj = new JObject();
+            obj.Add("positionX", rect.X);
+            obj.Add("positionY", rect.Y);
+            obj.Add("width", rect.Width);
+            obj.Add("height", rect.Height);
+
+            return obj;
         }
     }
 }

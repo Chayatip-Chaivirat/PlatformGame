@@ -8,11 +8,13 @@ namespace PlatformGame
 {
     internal class Platform : CollidableObject
     {
-        public Platform(Rectangle hitbox)
+        public bool isGoal {  get; private set; }
+        public Platform(Rectangle hitbox, bool isGoal)
         {
             this.tex = TextureManager.wallTex;
             color = Color.White;
             this.hitBoxLive = hitbox;
+            this.isGoal = isGoal;
         }
 
         public override void Draw(SpriteBatch spriteBatch)

@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace PlatformGame
 {
@@ -17,7 +18,7 @@ namespace PlatformGame
         {
             this.tex = tex;
             this.pos = pos;
-            hitBoxLive = new Rectangle((int)pos.X, (int)pos.Y, (int) frameSize.X, (int) frameSize.Y);
+            hitBoxLive = new Rectangle((int)pos.X, (int)pos.Y,40,40);
             objectMoving = false;
             scale = 1;
             velocity = new Vector2(200, 100);
@@ -29,53 +30,55 @@ namespace PlatformGame
             normalAttackCD = 0.5f;
         }
 
+        public bool PlatformCollision(Platform platform)
+        {
+            return Vector2.Distance(pos, platform.pos) < (hitBoxLive.Width + platform.hitBoxLive.Width);
+        }
+
         public void CollidingWithPlatform(Platform platform)
         {
-
             if (platform == null) return;
+
+            hitBoxLive.Location = pos.ToPoint(); // Location refers to the top-left corner of the rectangle
+            // ToPoint() converts Vector2 to Point (int)
+
             if (!hitBoxLive.Intersects(platform.hitBoxLive))
                 return;
 
-            // Update hitbox so it matches new position
-            hitBoxLive.Location = pos.ToPoint();
-            // Location refers to the top-left corner of the rectangle
-            // ToPoint() converts Vector2 to Point (int)
+            Rectangle intersection = Rectangle.Intersect(hitBoxLive, platform.hitBoxLive);
 
-            Rectangle intersection = Rectangle.Intersect(this.hitBoxLive, platform.hitBoxLive);
-
-            // Vertical
+            // Vertical collision
             if (intersection.Height < intersection.Width)
             {
-                if (velocity.Y > 0) // From top
+                if (velocity.Y > 0) // falling
                 {
                     pos.Y = platform.hitBoxLive.Top - hitBoxLive.Height;
-                    isOnGround = true;
                     velocity.Y = 0;
+                    isOnGround = true;
                 }
-
-                else if (velocity.Y < 0) // From bottom
+                else if (velocity.Y < 0) // jumping up
                 {
-                    pos.Y = platform.hitBoxLive.Bottom + hitBoxLive.Height;
+                    pos.Y = platform.hitBoxLive.Bottom;
                     velocity.Y = 0;
                 }
             }
-
-            // Horizontal
-            else
+            else // Horizontal collision
             {
-                if (velocity.X > 0) // Moving right
+                if (velocity.X > 0)
                 {
                     pos.X = platform.hitBoxLive.Left - hitBoxLive.Width;
-                    velocity.X = 0;
                 }
-                else if (velocity.X < 0) // Moving left
+                else if (velocity.X < 0)
                 {
-                    pos.X = platform.hitBoxLive.Right + hitBoxLive.Width;
-                    velocity.X = 0;
+                    pos.X = platform.hitBoxLive.Right;
                 }
+                velocity.X = 0;
             }
+
+            // sync again after correction
             hitBoxLive.Location = pos.ToPoint();
         }
+
 
         private Rectangle GetAttackHitBox()
         {
@@ -90,6 +93,17 @@ namespace PlatformGame
                 return new Rectangle((int)pos.X - width, (int)pos.Y, width, height); 
             }
         }
+
+        // Ensure the player stays within the screen bounds
+        public void ClampToScreen(Viewport viewport)
+        {
+            pos.X = MathHelper.Clamp(pos.X,0,viewport.Width - hitBoxLive.Width);
+
+            pos.Y = MathHelper.Clamp( pos.Y, 0,viewport.Height - hitBoxLive.Height);
+
+            hitBoxLive.Location = pos.ToPoint();
+        }
+
 
         public override void Update(GameTime gameTime)
         {
@@ -163,8 +177,6 @@ namespace PlatformGame
                     currentCD = normalAttackCD; // reset cooldown
                 }
             }
-
-
 
             else
             {
