@@ -24,7 +24,8 @@ namespace PlatformGame
             Starting,
             Playing,
             GameOver,
-            Victory
+            Victory,
+            Editor
         }
 
         public Game1()
@@ -45,7 +46,7 @@ namespace PlatformGame
             List<Rectangle> platformRectList = JsonFileHandler.AllInOneRecList(fileName, "platforms");
             foreach (Rectangle rec in platformRectList)
             {
-                bool isGoal = rec.X == 500 && rec.Y == 100;
+                bool isGoal = rec.X == 500 && rec.Y == 130;
                 Platform platform = new Platform(rec, isGoal);
                 platformList.Add(platform);
             }
@@ -109,6 +110,10 @@ namespace PlatformGame
                 {
                     gameState = GameState.Playing;
                 }
+                if (PlayerKeyReader.KeyPressed(Keys.E))
+                {
+                    gameState = GameState.Editor;
+                }
             }
 
             if (gameState == GameState.Playing)
@@ -169,8 +174,13 @@ namespace PlatformGame
                     platformList.Clear();
                     enemyList.Clear();
                     LoadContent();
-                    gameState = GameState.Playing;
+                    gameState = GameState.Starting;
                 }
+            }
+
+            if (gameState == GameState.Editor)
+            {
+
             }
 
             base.Update(gameTime);
