@@ -17,7 +17,7 @@ namespace PlatformGame
         {
             this.tex = tex;
             this.pos = pos;
-            hitBoxLive = new Rectangle((int)pos.X, (int)pos.Y, (int) frameSize.X, (int) frameSize.Y);
+            hitBoxLive = new Rectangle((int)pos.X, (int)pos.Y,40,40);
             objectMoving = false;
             scale = 1;
             velocity = new Vector2(200, 100);
@@ -42,7 +42,6 @@ namespace PlatformGame
             Rectangle intersection = Rectangle.Intersect(hitBoxLive, platform.hitBoxLive);
 
             // Vertical collision
-            int margin = 25; // small margin to prevent sticking
             if (intersection.Height < intersection.Width)
             {
                 if (velocity.Y > 0) // falling
@@ -53,7 +52,7 @@ namespace PlatformGame
                 }
                 else if (velocity.Y < 0) // jumping up
                 {
-                    pos.Y = platform.hitBoxLive.Bottom + margin;
+                    pos.Y = platform.hitBoxLive.Bottom;
                     velocity.Y = 0;
                 }
             }
@@ -65,7 +64,7 @@ namespace PlatformGame
                 }
                 else if (velocity.X < 0)
                 {
-                    pos.X = platform.hitBoxLive.Right + margin;
+                    pos.X = platform.hitBoxLive.Right;
                 }
                 velocity.X = 0;
             }

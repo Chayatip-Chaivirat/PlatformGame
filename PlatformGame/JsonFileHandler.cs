@@ -30,7 +30,7 @@ namespace PlatformGame
             JObject obj = (JObject)wholeObject.GetValue(propertyName);
 
             int x = Convert.ToInt32(obj.GetValue("positionX"));
-            int y = Convert.ToInt32(obj.GetValue("postitionY"));
+            int y = Convert.ToInt32(obj.GetValue("positionY"));
             int width = Convert.ToInt32(obj.GetValue("width"));
             int height = Convert.ToInt32(obj.GetValue("height"));
             Rectangle rec = new Rectangle(x, y, width, height);

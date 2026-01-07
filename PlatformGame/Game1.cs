@@ -16,7 +16,6 @@ namespace PlatformGame
 
         GameObjectHandler handler;
         Player player;
-        Vector2 frameSize = new Vector2(40, 40);
 
         //GameState
         static GameState gameState;
@@ -85,7 +84,7 @@ namespace PlatformGame
             ReadPlatformFromFile("level_1-1.json");
 
             Rectangle playerRec = JsonFileHandler.AllInOneRec("level_1-1.json", "player");
-            player = new Player(TextureManager.allLinkTex,new Vector2(playerRec.X, playerRec.Y),8,frameSize,0,0);
+            player = new Player(TextureManager.allLinkTex,new Vector2(playerRec.X, playerRec.Y),8,new Vector2(playerRec.Width, playerRec.Height),0,0);
             handler.objects.Add(player);
 
             foreach (Platform p in platformList)
