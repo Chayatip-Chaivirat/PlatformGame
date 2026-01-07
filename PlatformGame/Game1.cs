@@ -45,7 +45,8 @@ namespace PlatformGame
             List<Rectangle> platformRectList = JsonFileHandler.AllInOneRecList(fileName, "platforms");
             foreach (Rectangle rec in platformRectList)
             {
-                Platform platform = new Platform(rec);
+                bool isGoal = rec.X == 500 && rec.Y == 100;
+                Platform platform = new Platform(rec, isGoal);
                 platformList.Add(platform);
             }
         }
@@ -95,6 +96,7 @@ namespace PlatformGame
             player.enemies = enemyList;
         }
 
+
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -114,12 +116,28 @@ namespace PlatformGame
 
                 player.isOnGround = false;
                 player.Animation(gameTime);
-
+                player.ClampToScreen(GraphicsDevice.Viewport);
 
                 foreach (Platform p in platformList)
                 {
+                    if (p.isGoal)
+                    {
+                        Rectangle playerBox = player.hitBoxLive;
+                        Rectangle goalBox = p.hitBoxLive;
+
+                        bool landingOnTop = player.velocity.Y > 0 && playerBox.Bottom <= goalBox.Top + 5 && playerBox.Right > goalBox.Left && playerBox.Left < goalBox.Right;
+
+                        if (landingOnTop)
+                        {
+                            gameState = GameState.Victory;
+                            return;
+                        }
+                    }
+
+                    // Normal collision
                     player.CollidingWithPlatform(p);
                 }
+
 
                 handler.Update(gameTime);
 

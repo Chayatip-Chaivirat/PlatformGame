@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace PlatformGame
 {
@@ -87,6 +88,17 @@ namespace PlatformGame
                 return new Rectangle((int)pos.X - width, (int)pos.Y, width, height); 
             }
         }
+
+        // Ensure the player stays within the screen bounds
+        public void ClampToScreen(Viewport viewport)
+        {
+            pos.X = MathHelper.Clamp(pos.X,0,viewport.Width - hitBoxLive.Width);
+
+            pos.Y = MathHelper.Clamp( pos.Y, 0,viewport.Height - hitBoxLive.Height);
+
+            hitBoxLive.Location = pos.ToPoint();
+        }
+
 
         public override void Update(GameTime gameTime)
         {
